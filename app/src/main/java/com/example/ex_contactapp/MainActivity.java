@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import com.example.ex_contactapp.adapters.ViewPagerAdapter;
 import com.example.ex_contactapp.fragments.FragmentCalls;
+import com.example.ex_contactapp.fragments.FragmentContactGroups;
 import com.example.ex_contactapp.fragments.FragmentContacts;
 import com.example.ex_contactapp.fragments.FragmentFav;
 import com.google.android.material.tabs.TabLayout;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private final int[] ICONS = {R.drawable.ic_call,R.drawable.ic_contacts,R.drawable.ic_star};
+    private final int[] ICONS = {R.drawable.ic_call,R.drawable.ic_contacts,R.drawable.ic_star,R.drawable.ic_group};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new FragmentCalls(),"Calls");
         adapter.addFragment(new FragmentContacts(),"Contacts");
         adapter.addFragment(new FragmentFav(),"Fav");
+        adapter.addFragment(new FragmentContactGroups(),"Groups");
+
 
         viewPager.setAdapter(adapter);
         adapter.notifyDataSetChanged();

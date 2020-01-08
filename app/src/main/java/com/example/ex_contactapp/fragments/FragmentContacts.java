@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ex_contactapp.R;
-import com.example.ex_contactapp.adapters.CallsRvAdapter;
 import com.example.ex_contactapp.adapters.ContactsRvAdapter;
 import com.example.ex_contactapp.models.ModelContacts;
 
@@ -26,11 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FragmentContacts extends Fragment {
+public class FragmentContacts extends Fragment implements ContactsRvAdapter.CheckedStatusListener{
 
     private  View v;
 
     private RecyclerView recyclerView;
+
+    private List<String> currentSelectedContacts = new ArrayList<>();
 
     ContactsRvAdapter adapter;
     public FragmentContacts() {
@@ -55,7 +56,7 @@ public class FragmentContacts extends Fragment {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_CONTACTS},1);
         }else {
 
-            adapter = new ContactsRvAdapter(getContext(), getContacts());
+            adapter = new ContactsRvAdapter(getContext(), getContacts(),this);
             recyclerView.setItemViewCacheSize(getContacts().size());
 
             recyclerView.setAdapter(adapter);
@@ -73,7 +74,7 @@ public class FragmentContacts extends Fragment {
 
                 //now permission is granted call function again
 
-                 adapter = new ContactsRvAdapter(getContext(), getContacts());
+                 adapter = new ContactsRvAdapter(getContext(), getContacts(),this);
 
                 //List<ModelContacts> list = new ArrayList<>();
                 //list = getContacts().size();
@@ -97,7 +98,8 @@ public class FragmentContacts extends Fragment {
 
             while(cursor.moveToNext()){
 
-                list.add(new ModelContacts(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+                list.add(new ModelContacts(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)),
+                        cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
                         cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))));
             }
 
@@ -107,5 +109,17 @@ public class FragmentContacts extends Fragment {
             Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
         }
         return list;
+    }
+
+    @Override
+    public void onItemChecked(String contactId) {
+        currentSelectedContacts.add(contactId);
+        Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemUnchecked(String contactId) {
+        currentSelectedContacts.remove(contactId);
+        Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
     }
 }

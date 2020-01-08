@@ -2,9 +2,19 @@ package com.example.ex_contactapp.models;
 
 public class ModelContacts {
 
-    private String name, number;
+    private String id,name, number;
 
-    public ModelContacts(String name, String number) {
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public ModelContacts(String id, String name, String number) {
+        this.id = id;
         this.name = name;
         this.number = number;
     }

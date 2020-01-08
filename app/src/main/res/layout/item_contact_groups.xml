@@ -8,7 +8,7 @@
 
     <Button
         android:layout_gravity="center"
-        android:background="@drawable/ic_person"
+        android:background="@drawable/ic_group"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="32dp"/>
@@ -19,31 +19,20 @@
         android:layout_weight="8"
         android:orientation="vertical"
         android:layout_height="wrap_content">
-        
+
         <TextView
-            android:id="@+id/contact_name"
-            android:text="name"
+            android:id="@+id/contact_group_name"
+            android:text="@string/name"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/contact_number"
-            android:text="number"
-            android:textSize="16sp"
+            android:id="@+id/contact_group_noOFMembers"
+            android:text="@string/_22"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-
-
-
-    <CheckBox
-        android:id="@+id/contact_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:layout_height="32dp"
-        android:layout_weight="1"/>
-
 </LinearLayout>

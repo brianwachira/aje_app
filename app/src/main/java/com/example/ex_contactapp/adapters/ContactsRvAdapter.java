@@ -1,10 +1,13 @@
 package com.example.ex_contactapp.adapters;
 
 import android.content.Context;
+import android.graphics.ColorSpace;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,18 +17,26 @@ import com.example.ex_contactapp.models.ModelContacts;
 
 import java.util.List;
 
+
 public class ContactsRvAdapter extends RecyclerView.Adapter<ContactsRvAdapter.ViewHolder> {
 
     private Context mContext;
     private LayoutInflater inflater;
     private List<ModelContacts> mlistContacts;
+    private CheckedStatusListener mcheckedStatusListener;
 
 
-    public ContactsRvAdapter(Context context, List<ModelContacts> listContacts){
+    public interface CheckedStatusListener{
+        void onItemChecked(String contactId);
+        void onItemUnchecked(String contactId);
+    }
+
+    public ContactsRvAdapter(Context context, List<ModelContacts> listContacts,CheckedStatusListener checkedStatusListener){
 
         mlistContacts = listContacts;
 
         mContext = context;
+        mcheckedStatusListener = checkedStatusListener;
     }
 
     @NonNull
@@ -40,15 +51,30 @@ public class ContactsRvAdapter extends RecyclerView.Adapter<ContactsRvAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-        TextView contact_name,contact_number;
+        final TextView contact_name,contact_number;
+        final CheckBox contact_checkbox;
 
         contact_name = holder.contact_name;
         contact_number = holder.contact_number;
 
         contact_name.setText(mlistContacts.get(position).getName());
         contact_number.setText(mlistContacts.get(position).getNumber());
+
+        contact_checkbox = holder.contactSelectedCheckBox;
+
+        contact_checkbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (contact_checkbox.isChecked()){
+                    //Toast.makeText(mContext,mlistContacts.get(position).getId(),Toast.LENGTH_LONG).show();
+                    mcheckedStatusListener.onItemChecked(mlistContacts.get(position).getId());
+                }else{
+                    mcheckedStatusListener.onItemUnchecked(mlistContacts.get(position).getId());
+                }
+            }
+        });
 
     }
 
@@ -60,12 +86,14 @@ public class ContactsRvAdapter extends RecyclerView.Adapter<ContactsRvAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView contact_name,contact_number;
+        CheckBox contactSelectedCheckBox;
 
         public ViewHolder(View itemView){
             super(itemView);
 
             contact_name = itemView.findViewById(R.id.contact_name);
             contact_number = itemView.findViewById(R.id.contact_number);
+            contactSelectedCheckBox = itemView.findViewById(R.id.contact_checkbox);
 
         }
 
