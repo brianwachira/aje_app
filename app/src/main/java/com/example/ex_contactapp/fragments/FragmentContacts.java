@@ -8,18 +8,22 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ex_contactapp.R;
 import com.example.ex_contactapp.adapters.ContactsRvAdapter;
 import com.example.ex_contactapp.models.ModelContacts;
+import com.example.ex_contactapp.viewmodels.SharedViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +38,12 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
     private List<String> currentSelectedContacts = new ArrayList<>();
 
     ContactsRvAdapter adapter;
+
+    private EditText editTextGroupName;
+
+    private Button buttonCreateGroup;
+
+    private SharedViewModel sharedViewModel;
     public FragmentContacts() {
 
     }
@@ -44,6 +54,10 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
         v = inflater.inflate(R.layout.frag_contacts,container,false);
 
         recyclerView = v.findViewById(R.id.rv_contacts);
+
+        buttonCreateGroup = v.findViewById(R.id.button_create_group);
+
+        editTextGroupName = v.findViewById(R.id.group_name);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
@@ -63,6 +77,19 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
             //  adapter.notifyDataSetChanged();
 
         }
+
+        sharedViewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+            buttonCreateGroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    sharedViewModel.setGroupName(editTextGroupName.getText().toString());
+                    sharedViewModel.setCurrentSelectedContacts(currentSelectedContacts);
+
+                    Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+                }
+            });
+
 
         return v;
     }
@@ -114,12 +141,14 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
     @Override
     public void onItemChecked(String contactId) {
         currentSelectedContacts.add(contactId);
-        Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onItemUnchecked(String contactId) {
         currentSelectedContacts.remove(contactId);
-        Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
     }
+
+
 }
