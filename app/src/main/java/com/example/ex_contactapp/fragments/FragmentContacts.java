@@ -85,6 +85,8 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
                 sharedViewModel.setGroupName(editTextGroupName.getText().toString());
                 sharedViewModel.setCurrentSelectedContacts(currentSelectedContacts);
 
+                //clearFields();
+                editTextGroupName.setText("");
                 Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
             });
 
@@ -148,5 +150,10 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
         //Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
     }
 
+    public void clearFields(){
+        editTextGroupName.setText("");
+        currentSelectedContacts.clear();
+
+    }
 
 }
