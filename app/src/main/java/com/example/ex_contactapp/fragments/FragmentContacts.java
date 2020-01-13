@@ -27,6 +27,7 @@ import com.example.ex_contactapp.viewmodels.SharedViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class FragmentContacts extends Fragment implements ContactsRvAdapter.CheckedStatusListener{
@@ -78,16 +79,13 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
         }
 
-        sharedViewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
-            buttonCreateGroup.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        sharedViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(SharedViewModel.class);
+            buttonCreateGroup.setOnClickListener(v -> {
 
-                    sharedViewModel.setGroupName(editTextGroupName.getText().toString());
-                    sharedViewModel.setCurrentSelectedContacts(currentSelectedContacts);
+                sharedViewModel.setGroupName(editTextGroupName.getText().toString());
+                sharedViewModel.setCurrentSelectedContacts(currentSelectedContacts);
 
-                    Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
             });
 
 
