@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ex_contactapp.R;
 import com.example.ex_contactapp.models.ModelContactGroups;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRvAdapter.ViewHolder>{
@@ -22,6 +23,7 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
     public ContactGroupsRvAdapter(Context context, List<ModelContactGroups> listContactGroups){
 
         mContext = context;
+        mContactGroupsList = new ArrayList<>();
         mContactGroupsList = listContactGroups;
     }
 
@@ -45,7 +47,8 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
         contact_group_numof_members = holder.contact_group_numof_members;
 
         contact_group_name.setText(mContactGroupsList.get(position).getGroupName());
-        contact_group_numof_members.setText(mContactGroupsList.get(position).getContactIdList().size());
+        String sizeOfGroup = String.valueOf(mContactGroupsList.get(position).getContactIdList().size());
+        contact_group_numof_members.setText(sizeOfGroup);
     }
 
     @Override
