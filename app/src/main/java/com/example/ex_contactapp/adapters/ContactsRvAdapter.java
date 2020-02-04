@@ -1,13 +1,11 @@
 package com.example.ex_contactapp.adapters;
 
 import android.content.Context;
-import android.graphics.ColorSpace;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,15 +62,12 @@ public class ContactsRvAdapter extends RecyclerView.Adapter<ContactsRvAdapter.Vi
 
         contact_checkbox = holder.contactSelectedCheckBox;
 
-        contact_checkbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (contact_checkbox.isChecked()){
-                    //Toast.makeText(mContext,mlistContacts.get(position).getId(),Toast.LENGTH_LONG).show();
-                    mcheckedStatusListener.onItemChecked(mlistContacts.get(position).getId());
-                }else{
-                    mcheckedStatusListener.onItemUnchecked(mlistContacts.get(position).getId());
-                }
+        contact_checkbox.setOnClickListener(v -> {
+            if (contact_checkbox.isChecked()){
+                //Toast.makeText(mContext,mlistContacts.get(position).getId(),Toast.LENGTH_LONG).show();
+                mcheckedStatusListener.onItemChecked(mlistContacts.get(position).getId());
+            }else{
+                mcheckedStatusListener.onItemUnchecked(mlistContacts.get(position).getId());
             }
         });
 
