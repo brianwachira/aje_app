@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FragmentContactGroups extends Fragment {
+public class FragmentContactGroups extends Fragment implements ContactGroupsRvAdapter.RecyclerViewTappedListener {
 
     private View v;
 
@@ -45,7 +46,7 @@ public class FragmentContactGroups extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new ContactGroupsRvAdapter(getContext(),getContactGroups());
+        adapter = new ContactGroupsRvAdapter(getContext(),getContactGroups(),this);
 
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -68,5 +69,17 @@ public class FragmentContactGroups extends Fragment {
         });
 
         return list;
+    }
+
+    @Override
+    public void onRecyclerViewTapped(String groupName, List<String> contactIdList) {
+        showDialog(groupName,contactIdList);
+    }
+
+    private void showDialog(String groupName, List<String> contactIdList){
+        FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        FragmentDialogContacts fragmentDialogContacts = FragmentDialogContacts.newInstance(groupName,contactIdList);
+        fragmentDialogContacts.setTargetFragment(this,0);
+        fragmentDialogContacts.show(fm,"contact-group-list");
     }
 }

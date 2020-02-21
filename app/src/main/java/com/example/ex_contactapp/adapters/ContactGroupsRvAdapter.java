@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,14 +20,19 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
     private Context mContext;
     private LayoutInflater inflater;
     private List<ModelContactGroups> mContactGroupsList;
+    private RecyclerViewTappedListener mRecyclerViewClickedListener;
 
-    public ContactGroupsRvAdapter(Context context, List<ModelContactGroups> listContactGroups){
+    public ContactGroupsRvAdapter(Context context, List<ModelContactGroups> listContactGroups, RecyclerViewTappedListener recyclerViewTappedListener){
 
         mContext = context;
         mContactGroupsList = new ArrayList<>();
         mContactGroupsList = listContactGroups;
+        mRecyclerViewClickedListener = recyclerViewTappedListener;
     }
 
+    public interface RecyclerViewTappedListener{
+        void onRecyclerViewTapped(String groupName,List<String> contactIdList);
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
@@ -46,9 +52,12 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
         contact_group_name = holder.contact_group_name;
         contact_group_numof_members = holder.contact_group_numof_members;
 
+
         contact_group_name.setText(mContactGroupsList.get(position).getGroupName());
         String sizeOfGroup = String.valueOf(mContactGroupsList.get(position).getContactIdList().size());
         contact_group_numof_members.setText(sizeOfGroup);
+
+        holder.bind(mContactGroupsList.get(position).getGroupName(),mContactGroupsList.get(position).getContactIdList(),mRecyclerViewClickedListener);
     }
 
     @Override
@@ -64,9 +73,21 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
 
             contact_group_name = itemView.findViewById(R.id.contact_group_name);
             contact_group_numof_members = itemView.findViewById(R.id.contact_group_noOFMembers);
+
         }
 
 
 
+
+        public void bind(final String groupName,final List<String> contactIdList, final RecyclerViewTappedListener mListener){
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onRecyclerViewTapped(groupName,contactIdList);
+                    //Toast.makeText(mContext, contactIdList + " ", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }
