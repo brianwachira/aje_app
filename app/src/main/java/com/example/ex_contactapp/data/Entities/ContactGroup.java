@@ -2,7 +2,10 @@ package com.example.ex_contactapp.data.Entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import java.util.List;
 
 import static androidx.room.RoomMasterTable.TABLE_NAME;
 
@@ -45,5 +48,24 @@ public class ContactGroup {
         this.numofcontacts = numofcontacts;
     }
 
+    @Ignore
+    private List<Grouplist> grouplist = null;
+
+public ContactGroup(){
+
+}
+/**
+ * @param grouplist
+ * @param groupname
+ * @param numofcontacts
+ */
+@Ignore
+public ContactGroup(String groupname,String numofcontacts,List<Grouplist> grouplist) {
+    super();
+    this.groupname = groupname;
+    this.numofcontacts = numofcontacts;
+    this.grouplist = grouplist;
+
 }
 
+}
