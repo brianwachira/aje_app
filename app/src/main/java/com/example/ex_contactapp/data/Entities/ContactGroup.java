@@ -7,15 +7,17 @@ import androidx.room.PrimaryKey;
 
 import java.util.List;
 
-import static androidx.room.RoomMasterTable.TABLE_NAME;
+import static com.example.ex_contactapp.data.Entities.ContactGroup.TABLE_NAME;
+
 
 @Entity (tableName = TABLE_NAME)
 public class ContactGroup {
 
     public static final String TABLE_NAME = "contactgroup";
 
+
     @PrimaryKey(autoGenerate = true) @NonNull
-    private Integer groupid;
+    private Integer id;
 
     @NonNull
     private String groupname;
@@ -24,13 +26,16 @@ public class ContactGroup {
     private String numofcontacts;
 
 
-    public Integer getGroupid() {
-        return groupid;
+
+    @NonNull
+    public Integer getId() {
+        return id;
     }
 
-    public void setGroupid(Integer groupid) {
-        this.groupid = groupid;
+    public void setId(@NonNull Integer id) {
+        this.id = id;
     }
+
 
     public String getGroupname() {
         return groupname;
@@ -51,8 +56,15 @@ public class ContactGroup {
     @Ignore
     private List<Grouplist> grouplist = null;
 
-public ContactGroup(){
+    public ContactGroup(String groupname,String numofcontacts){
+        this.groupname = groupname;
+        this.numofcontacts = numofcontacts;
+    }
 
+public ContactGroup(Integer id,String groupname,String numofcontacts){
+    this.id = id;
+    this.groupname = groupname;
+    this.numofcontacts = numofcontacts;
 }
 /**
  * @param grouplist

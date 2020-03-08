@@ -9,13 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ex_contactapp.R;
 import com.example.ex_contactapp.adapters.ContactGroupsRvAdapter;
+import com.example.ex_contactapp.data.Entities.ContactGroup;
 import com.example.ex_contactapp.models.ModelContactGroups;
+import com.example.ex_contactapp.viewmodels.ContactGroupViewModel;
 import com.example.ex_contactapp.viewmodels.SharedViewModel;
 
 import java.util.ArrayList;
@@ -31,6 +34,10 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
     SharedViewModel sharedViewModel;
 
     ContactGroupsRvAdapter adapter;
+
+    ContactGroupViewModel contactGroupViewModel;
+
+    LiveData<List<ContactGroup>> contactGroup;
     public FragmentContactGroups() {
     }
 
@@ -60,6 +67,7 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
         List<ModelContactGroups> list = new ArrayList<>();
         sharedViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(SharedViewModel.class);
 
+        contactGroupViewModel = ViewModelProviders.of(this, new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
             sharedViewModel.getCurrentSelectedContacts().observe(this,currentSelectedContacts ->{
                 sharedViewModel.getGroupName().observe(this,groupName -> {
 
@@ -67,7 +75,7 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
             });
 
         });
-
+         contactGroup = contactGroupViewModel.readGroup();
         return list;
     }
 

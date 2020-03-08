@@ -1,5 +1,6 @@
 package com.example.ex_contactapp.fragments;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ex_contactapp.R;
 import com.example.ex_contactapp.adapters.ContactsRvAdapter;
 import com.example.ex_contactapp.models.ModelContacts;
+import com.example.ex_contactapp.viewmodels.ContactGroupViewModel;
 import com.example.ex_contactapp.viewmodels.SharedViewModel;
 
 import java.util.ArrayList;
@@ -45,6 +47,9 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
     private Button buttonCreateGroup;
 
     private SharedViewModel sharedViewModel;
+
+    private ContactGroupViewModel contactGroupViewModel;
+
     public FragmentContacts() {
 
     }
@@ -80,13 +85,18 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
         }
 
         sharedViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(SharedViewModel.class);
+        contactGroupViewModel = ViewModelProviders.of(this, new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
+
             buttonCreateGroup.setOnClickListener(v -> {
 
-                sharedViewModel.setGroupName(editTextGroupName.getText().toString());
-                sharedViewModel.setCurrentSelectedContacts(currentSelectedContacts);
+                contactGroupViewModel.createGroup(editTextGroupName.getText().toString(),String.valueOf(currentSelectedContacts.size()));
+
+                //sharedViewModel.setGroupName(editTextGroupName.getText().toString());
+                //sharedViewModel.setCurrentSelectedContacts(currentSelectedContacts);
 
                 //clearFields();
                 editTextGroupName.setText("");
+
                 Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
             });
 
@@ -155,5 +165,6 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
         currentSelectedContacts.clear();
 
     }
+
 
 }
