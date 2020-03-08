@@ -8,25 +8,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ex_contactapp.R;
+import com.example.ex_contactapp.data.Entities.ContactGroup;
 import com.example.ex_contactapp.models.ModelContactGroups;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRvAdapter.ViewHolder>{
     private Context mContext;
     private LayoutInflater inflater;
     private List<ModelContactGroups> mContactGroupsList;
+    private List<ContactGroup> contactGroupLiveData;
     private RecyclerViewTappedListener mRecyclerViewClickedListener;
 
-    public ContactGroupsRvAdapter(Context context, List<ModelContactGroups> listContactGroups, RecyclerViewTappedListener recyclerViewTappedListener){
+    public ContactGroupsRvAdapter(Context context, List<ContactGroup> listContactGroups, RecyclerViewTappedListener recyclerViewTappedListener){
 
         mContext = context;
         mContactGroupsList = new ArrayList<>();
-        mContactGroupsList = listContactGroups;
+        contactGroupLiveData = listContactGroups;
         mRecyclerViewClickedListener = recyclerViewTappedListener;
     }
 
@@ -53,16 +57,16 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
         contact_group_numof_members = holder.contact_group_numof_members;
 
 
-        contact_group_name.setText(mContactGroupsList.get(position).getGroupName());
-        String sizeOfGroup = String.valueOf(mContactGroupsList.get(position).getContactIdList().size());
-        contact_group_numof_members.setText(sizeOfGroup);
+        contact_group_name.setText(contactGroupLiveData.get(position).getGroupname());
+        //String sizeOfGroup = String.valueOf(mContactGroupsList.get(position).getContactIdList().size());
+        contact_group_numof_members.setText(contactGroupLiveData.get(position).getNumofcontacts());
 
-        holder.bind(mContactGroupsList.get(position).getGroupName(),mContactGroupsList.get(position).getContactIdList(),mRecyclerViewClickedListener);
+        holder.bind(contactGroupLiveData.get(position).getGroupname(), Collections.singletonList(String.valueOf(contactGroupLiveData.get(position).getId())),mRecyclerViewClickedListener);
     }
 
     @Override
     public int getItemCount() {
-        return mContactGroupsList.size();
+        return contactGroupLiveData.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

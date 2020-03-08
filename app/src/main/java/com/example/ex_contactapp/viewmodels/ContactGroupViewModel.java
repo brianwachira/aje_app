@@ -25,7 +25,7 @@ public class ContactGroupViewModel extends ViewModel {
         contactGroupRepository.insertContactGroup(groupname,numofcontacts);
     }
 
-    public LiveData<List<ContactGroup>> readGroup(){
+    public List<ContactGroup> readGroup(){
 
         return contactGroupRepository.ReadContactGroups();
     }

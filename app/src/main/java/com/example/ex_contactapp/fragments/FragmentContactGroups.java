@@ -37,7 +37,7 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
 
     ContactGroupViewModel contactGroupViewModel;
 
-    LiveData<List<ContactGroup>> contactGroup;
+    List<ContactGroup> contactGroup;
     public FragmentContactGroups() {
     }
 
@@ -53,7 +53,11 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
 
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new ContactGroupsRvAdapter(getContext(),getContactGroups(),this);
+        contactGroupViewModel = ViewModelProviders.of(this, new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
+
+        contactGroup = contactGroupViewModel.readGroup();
+
+        adapter = new ContactGroupsRvAdapter(getContext(),contactGroup,this);
 
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -63,11 +67,9 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
         return v;
     }
 
-    private List<ModelContactGroups> getContactGroups(){
+    /*private List<ModelContactGroups> getContactGroups(){
         List<ModelContactGroups> list = new ArrayList<>();
         sharedViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(SharedViewModel.class);
-
-        contactGroupViewModel = ViewModelProviders.of(this, new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
             sharedViewModel.getCurrentSelectedContacts().observe(this,currentSelectedContacts ->{
                 sharedViewModel.getGroupName().observe(this,groupName -> {
 
@@ -75,9 +77,8 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
             });
 
         });
-         contactGroup = contactGroupViewModel.readGroup();
         return list;
-    }
+    }*/
 
     @Override
     public void onRecyclerViewTapped(String groupName, List<String> contactIdList) {

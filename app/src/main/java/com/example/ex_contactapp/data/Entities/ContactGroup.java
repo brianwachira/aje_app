@@ -53,14 +53,20 @@ public class ContactGroup {
         this.numofcontacts = numofcontacts;
     }
 
+    public ContactGroup(){
+
+    }
+
     @Ignore
     private List<Grouplist> grouplist = null;
 
+    @Ignore
     public ContactGroup(String groupname,String numofcontacts){
         this.groupname = groupname;
         this.numofcontacts = numofcontacts;
     }
 
+    @Ignore
 public ContactGroup(Integer id,String groupname,String numofcontacts){
     this.id = id;
     this.groupname = groupname;
