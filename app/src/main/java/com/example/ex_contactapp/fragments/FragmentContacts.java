@@ -158,9 +158,16 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
         List<ModelContacts> list = new ArrayList<>();
 
         try{
+            String[] PROJECTION = new String[] {
+                    ContactsContract.CommonDataKinds.Photo.CONTACT_ID,
+                    ContactsContract.Contacts.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.Phone.NUMBER, };
+
+            String selectionFields =  ""+ ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0 and " + ContactsContract.CommonDataKinds.Phone.TYPE +"=" + ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
+            String[] selectionArgs = new String[]{"com.whatsapp"};
 
             Cursor cursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                    null,null,null,ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+                    PROJECTION,selectionFields,null,ContactsContract.Contacts.DISPLAY_NAME + " ASC");
             cursor.moveToFirst();
 
             while(cursor.moveToNext()){

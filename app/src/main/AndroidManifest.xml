@@ -5,6 +5,7 @@
     <uses-permission-sdk-23 android:name="android.permission.READ_CALL_LOG"/>
     <uses-permission-sdk-23 android:name="android.permission.READ_CONTACTS"/>
     <uses-permission-sdk-23 android:name="android.permission.READ_PHONE_NUMBERS"/>
+    <uses-permission-sdk-23 android:name="android.permission.GET_ACCOUNTS_PRIVILEGED"/>
     
     <application
         android:allowBackup="true"

@@ -22,11 +22,11 @@ public class Grouplist {
 
     private String lastName;
 
-    @NonNull
-    private String phoneNumber;
-
 
     private String middleName;
+
+    @NonNull
+    private String phoneNumber;
 
     @NonNull
     private Integer groupid;
@@ -44,11 +44,12 @@ public class Grouplist {
      */
 
 
-    public Grouplist(String firstName, String lastName, @NonNull String phoneNumber, String middleName) {
+    public Grouplist(String firstName, String lastName, String middleName, @NonNull String phoneNumber,@NonNull int groupid) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
         this.middleName = middleName;
+        this.phoneNumber = phoneNumber;
+        this.groupid = groupid;
     }
 
     @ForeignKey(
@@ -97,10 +98,11 @@ public class Grouplist {
         this.middleName = middleName;
     }
 
+    @NonNull
     public Integer getGroupid() {
         return groupid;
     }
-    public void setContactid(Integer contactid) {
+    public void setContactid(@NonNull Integer contactid) {
         this.contactid = contactid;
     }
 
