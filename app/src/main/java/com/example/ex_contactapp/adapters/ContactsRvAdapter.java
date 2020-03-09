@@ -66,7 +66,7 @@ public class ContactsRvAdapter extends RecyclerView.Adapter<ContactsRvAdapter.Vi
         contact_checkbox.setOnClickListener(v -> {
             if (contact_checkbox.isChecked()){
                 //Toast.makeText(mContext,mlistContacts.get(position).getId(),Toast.LENGTH_LONG).show();
-                mcheckedStatusListener.onItemChecked(mlistContacts.get(position));
+                mcheckedStatusListener.onItemChecked(mlistContacts.get(position).getId());
             }else{
                 mcheckedStatusListener.onItemUnchecked(mlistContacts.get(position).getId());
             }
