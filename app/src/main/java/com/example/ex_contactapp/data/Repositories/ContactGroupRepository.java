@@ -32,4 +32,8 @@ public class ContactGroupRepository {
         return contactGroupDao.getContactGroups();
     }
 
+    public void deleteContactGroup(int id){
+        contactGroupDao.deleteContactGroup(id);
+    }
+
 }

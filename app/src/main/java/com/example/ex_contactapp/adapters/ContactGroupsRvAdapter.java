@@ -5,10 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ex_contactapp.R;
@@ -25,18 +23,29 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
     private List<ModelContactGroups> mContactGroupsList;
     private List<ContactGroup> contactGroupLiveData;
     private RecyclerViewTappedListener mRecyclerViewClickedListener;
+    //private RecyclerViewLongClickedListener mRecyclerViewLongClickedListener;
 
-    public ContactGroupsRvAdapter(Context context, List<ContactGroup> listContactGroups, RecyclerViewTappedListener recyclerViewTappedListener){
+
+    public ContactGroupsRvAdapter(Context context, List<ContactGroup> listContactGroups, RecyclerViewTappedListener recyclerViewTappedListener/*, RecyclerViewLongClickedListener recyclerViewLongClickedListener*/){
 
         mContext = context;
         mContactGroupsList = new ArrayList<>();
         contactGroupLiveData = listContactGroups;
         mRecyclerViewClickedListener = recyclerViewTappedListener;
+        //mRecyclerViewLongClickedListener = recyclerViewLongClickedListener;
+
     }
 
     public interface RecyclerViewTappedListener{
         void onRecyclerViewTapped(String groupName,List<String> contactIdList);
+        void onRecyclerViewLongClick(int id);
     }
+
+    public interface RecyclerViewLongClickedListener{
+        void onRecyclerViewLongClick(int id);
+
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
@@ -61,7 +70,9 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
         //String sizeOfGroup = String.valueOf(mContactGroupsList.get(position).getContactIdList().size());
         contact_group_numof_members.setText(contactGroupLiveData.get(position).getNumofcontacts());
 
-        holder.bind(contactGroupLiveData.get(position).getGroupname(), Collections.singletonList(String.valueOf(contactGroupLiveData.get(position).getId())),mRecyclerViewClickedListener);
+        holder.bind(contactGroupLiveData.get(position).getId(),contactGroupLiveData.get(position).getGroupname(), Collections.singletonList(String.valueOf(contactGroupLiveData.get(position).getId())),mRecyclerViewClickedListener);
+
+        //holder.bindanother(Integer.parseInt(contactGroupLiveData.get(position).getId().toString()),mRecyclerViewLongClickedListener);
     }
 
     @Override
@@ -83,13 +94,33 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
 
 
 
-        public void bind(final String groupName,final List<String> contactIdList, final RecyclerViewTappedListener mListener){
+        public void bind(final Integer id, final String groupName,final List<String> contactIdList, final RecyclerViewTappedListener mListener){
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mListener.onRecyclerViewTapped(groupName,contactIdList);
                     //Toast.makeText(mContext, contactIdList + " ", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    mListener.onRecyclerViewLongClick(id);
+                    return false;
+                }
+            });
+        }
+
+        public void bindanother(final int id, final RecyclerViewLongClickedListener mRecyclerViewLongClickedListener) {
+            itemView.setOnLongClickListener(new View.OnLongClickListener(){
+
+                @Override
+                public boolean onLongClick(View v) {
+                    mRecyclerViewLongClickedListener.onRecyclerViewLongClick(id);
+                    return false;
                 }
             });
         }

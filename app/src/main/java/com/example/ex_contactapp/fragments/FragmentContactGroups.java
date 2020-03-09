@@ -1,9 +1,12 @@
 package com.example.ex_contactapp.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +41,7 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
     ContactGroupViewModel contactGroupViewModel;
 
     List<ContactGroup> contactGroup;
+
     public FragmentContactGroups() {
     }
 
@@ -83,6 +87,27 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
     @Override
     public void onRecyclerViewTapped(String groupName, List<String> contactIdList) {
         showDialog(groupName,contactIdList);
+    }
+
+    @Override
+    public void onRecyclerViewLongClick(int id) {
+        final int groupToDelete = id;
+
+        new AlertDialog.Builder(this.getActivity())
+                .setIcon(R.drawable.ic_delete)
+                .setTitle("Are you sure")
+                .setMessage("Do you want to delete this group")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        contactGroupViewModel.deleteGroup(groupToDelete);
+                        Toast.makeText(getContext(),"Group deleted",Toast.LENGTH_LONG).show();
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton("No",null)
+                .show();
+
     }
 
     private void showDialog(String groupName, List<String> contactIdList){

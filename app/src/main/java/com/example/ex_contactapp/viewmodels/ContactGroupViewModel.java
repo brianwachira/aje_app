@@ -20,10 +20,16 @@ public class ContactGroupViewModel extends ViewModel {
     public  ContactGroupViewModel(Context context){
         contactGroupRepository = ContactGroupRepository.getInstance(ContactGroupDatabase.getAppDatabase(context).contactGroupDao());
     }
+
     public void createGroup(String groupname, String numofcontacts){
 
         contactGroupRepository.insertContactGroup(groupname,numofcontacts);
     }
+
+    public void deleteGroup(int groupId){
+        contactGroupRepository.deleteContactGroup(groupId);
+    }
+
 
     public List<ContactGroup> readGroup(){
 
