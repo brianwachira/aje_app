@@ -159,12 +159,12 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
         try{
             String[] PROJECTION = new String[] {
-                    ContactsContract.CommonDataKinds.Photo.CONTACT_ID,
                     ContactsContract.Contacts.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NUMBER, };
+                    ContactsContract.CommonDataKinds.Phone.NUMBER,
+                    ContactsContract.CommonDataKinds.Photo.CONTACT_ID };
 
             String selectionFields =  ""+ ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0 and " + ContactsContract.CommonDataKinds.Phone.TYPE +"=" + ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
-            String[] selectionArgs = new String[]{"com.whatsapp"};
+            String[] selectionArgs = new String[]{"com.google"};
 
             Cursor cursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     PROJECTION,selectionFields,null,ContactsContract.Contacts.DISPLAY_NAME + " ASC");
