@@ -31,7 +31,7 @@ public class ContactGroupViewModel extends ViewModel {
     }
 
 
-    public List<ContactGroup> readGroup(){
+    public LiveData<List<ContactGroup>> readGroup(){
 
         return contactGroupRepository.ReadContactGroups();
     }

@@ -59,14 +59,11 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
 
         contactGroupViewModel = ViewModelProviders.of(this, new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
 
-        contactGroup = contactGroupViewModel.readGroup();
+         contactGroupViewModel.readGroup().observe(this,contactGroups ->
+                //contactGroup = contactGroups);
 
-        adapter = new ContactGroupsRvAdapter(getContext(),contactGroup,this);
-
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-
+                 setAdapter(new ContactGroupsRvAdapter(getContext(),contactGroups,this))
+         );
 
         return v;
     }
@@ -83,7 +80,10 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
         });
         return list;
     }*/
-
+    void setAdapter(ContactGroupsRvAdapter adapter){
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
     @Override
     public void onRecyclerViewTapped(String groupName, List<String> contactIdList) {
         showDialog(groupName,contactIdList);
@@ -102,7 +102,7 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
                     public void onClick(DialogInterface dialog, int which) {
                         contactGroupViewModel.deleteGroup(groupToDelete);
                         Toast.makeText(getContext(),"Group deleted",Toast.LENGTH_LONG).show();
-                        adapter.notifyDataSetChanged();
+
                     }
                 })
                 .setNegativeButton("No",null)

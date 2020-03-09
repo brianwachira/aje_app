@@ -19,7 +19,7 @@ import java.util.List;
 public interface ContactGroupDao {
 
     @Query("SELECT * FROM contactgroup ORDER BY `id` DESC")
-    List<ContactGroup> getContactGroups();
+    LiveData<List<ContactGroup>> getContactGroups();
 
     @Transaction
     @Query("SELECT * FROM contactgroup")

@@ -16,6 +16,7 @@ public class Grouplist {
     @PrimaryKey(autoGenerate = true)
     private Integer contactid;
 
+    @NonNull
     private String firstName;
 
 
@@ -26,6 +27,9 @@ public class Grouplist {
 
 
     private String middleName;
+
+    @NonNull
+    private Integer groupid;
 
 
     public Grouplist(){
@@ -53,7 +57,6 @@ public class Grouplist {
             childColumns = "groupid",
             onDelete = CASCADE
     )
-    private Integer groupid;
 
 
 

@@ -77,7 +77,7 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
 
     @Override
     public int getItemCount() {
-        return contactGroupLiveData.size();
+        return contactGroupLiveData == null ? 0 : contactGroupLiveData.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

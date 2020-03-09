@@ -6,15 +6,18 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -44,6 +47,8 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
     private EditText editTextGroupName;
 
+    private CheckBox recyclerviewCheckbox;
+
     private Button buttonCreateGroup;
 
     private SharedViewModel sharedViewModel;
@@ -64,6 +69,10 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
         buttonCreateGroup = v.findViewById(R.id.button_create_group);
 
         editTextGroupName = v.findViewById(R.id.group_name);
+
+        recyclerviewCheckbox = v.findViewById(R.id.contact_checkbox);
+
+
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
@@ -89,15 +98,36 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
             buttonCreateGroup.setOnClickListener(v -> {
 
-                contactGroupViewModel.createGroup(editTextGroupName.getText().toString(),String.valueOf(currentSelectedContacts.size()));
+                Log.i("editTextGroupNamelength", String.valueOf(editTextGroupName.getText().toString().length()));
+                if (editTextGroupName.getText().toString().length() > 2) {
+                    if(currentSelectedContacts.size() > 4){
+                        contactGroupViewModel.createGroup(editTextGroupName.getText().toString(),String.valueOf(currentSelectedContacts.size()));
+                        clearFields();
+                    }else{
+                        new AlertDialog.Builder(this.getActivity())
+                                .setIcon(R.drawable.ic_error)
+                                .setTitle("Insufficient group members")
+                                .setMessage("A group should have at least 5 members")
+                                .setNeutralButton("Ok",null)
+                                .show();
+                    }
+                }else{
+                    new AlertDialog.Builder(this.getActivity())
+                            .setIcon(R.drawable.ic_error)
+                            .setTitle("Group name is too short")
+                            .setMessage("A group should have atleast be 3 characters long")
+                            .setNeutralButton("Ok",null)
+                            .show();
+
+                }
 
                 //sharedViewModel.setGroupName(editTextGroupName.getText().toString());
                 //sharedViewModel.setCurrentSelectedContacts(currentSelectedContacts);
 
                 //clearFields();
-                editTextGroupName.setText("");
+                //editTextGroupName.setText("");
 
-                Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
             });
 
 
@@ -162,7 +192,10 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
     public void clearFields(){
         editTextGroupName.setText("");
+        //recyclerviewCheckbox.setChecked(false);
+        //adapter.notifyDataSetChanged();
         currentSelectedContacts.clear();
+
 
     }
 

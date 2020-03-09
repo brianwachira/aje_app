@@ -27,7 +27,7 @@ public class ContactGroupRepository {
         contactGroupDao.insertGroup(newContactGroup);
     }
 
-    public List<ContactGroup> ReadContactGroups(){
+    public LiveData<List<ContactGroup>> ReadContactGroups(){
 
         return contactGroupDao.getContactGroups();
     }
