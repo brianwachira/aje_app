@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 
 import com.example.ex_contactapp.data.DAO.ContactGroupDao;
 import com.example.ex_contactapp.data.Entities.ContactGroup;
+import com.example.ex_contactapp.data.Relations.ContactGroupAndGroupList;
 
 import java.util.List;
 
@@ -32,8 +33,16 @@ public class ContactGroupRepository {
         return contactGroupDao.getContactGroups();
     }
 
+    public Integer readGroupId( String name){
+        return  contactGroupDao.getGroupId(name);
+    }
+
     public void deleteContactGroup(int id){
         contactGroupDao.deleteContactGroup(id);
+    }
+
+    public LiveData<List<ContactGroupAndGroupList>> readContactGroupAndContactsById(int id){
+        return contactGroupDao.getContactGroupAndContactsById(id);
     }
 
 }

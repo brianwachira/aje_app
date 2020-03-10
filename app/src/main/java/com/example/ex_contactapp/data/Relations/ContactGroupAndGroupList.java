@@ -36,4 +36,9 @@ public class ContactGroupAndGroupList {
     public void setGrouplist(List<Grouplist> grouplist) {
         this.grouplist = grouplist;
     }
+
+    public ContactGroupAndGroupList(ContactGroup contactGroup, List<Grouplist> grouplist) {
+        this.contactGroup = contactGroup;
+        this.grouplist = grouplist;
+    }
 }

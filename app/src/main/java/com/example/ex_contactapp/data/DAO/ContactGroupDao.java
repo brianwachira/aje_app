@@ -21,9 +21,15 @@ public interface ContactGroupDao {
     @Query("SELECT * FROM contactgroup ORDER BY `id` DESC")
     LiveData<List<ContactGroup>> getContactGroups();
 
+    //@Query("SELECT * FROM contactgroup WHERE  contactgroup.groupname=:name")
+
+
+    @Query("SELECT id FROM contactgroup WHERE contactgroup.groupname=:name")
+    Integer  getGroupId(String name);
+
     @Transaction
-    @Query("SELECT * FROM contactgroup")
-    List<ContactGroupAndGroupList> getContactGroupAndContacts();
+    @Query("SELECT * FROM contactgroup WHERE contactgroup.id=:id")
+    LiveData<List<ContactGroupAndGroupList>> getContactGroupAndContactsById(int id);
 
     @Transaction
     @Query("SELECT * FROM contactgroup")

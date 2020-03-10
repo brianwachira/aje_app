@@ -25,8 +25,9 @@ public class ContactsRvAdapter extends RecyclerView.Adapter<ContactsRvAdapter.Vi
 
 
     public interface CheckedStatusListener{
-        void onItemChecked(String contactId);
-        void onItemUnchecked(String contactId);
+        //String firstName, String lastName, String middleName, @NonNull String phoneNumber,@NonNull int groupid
+        void onItemChecked(String name, String phonenumber);
+        void onItemUnchecked(String name, String phonenumber);
     }
 
     public ContactsRvAdapter(Context context, List<ModelContacts> listContacts,CheckedStatusListener checkedStatusListener){
@@ -66,9 +67,10 @@ public class ContactsRvAdapter extends RecyclerView.Adapter<ContactsRvAdapter.Vi
         contact_checkbox.setOnClickListener(v -> {
             if (contact_checkbox.isChecked()){
                 //Toast.makeText(mContext,mlistContacts.get(position).getId(),Toast.LENGTH_LONG).show();
-                mcheckedStatusListener.onItemChecked(mlistContacts.get(position).getId());
+                //String firstName, String lastName, String middleName, @NonNull String phoneNumber,@NonNull int groupid
+                mcheckedStatusListener.onItemChecked(mlistContacts.get(position).getName(),mlistContacts.get(position).getNumber());
             }else{
-                mcheckedStatusListener.onItemUnchecked(mlistContacts.get(position).getId());
+                mcheckedStatusListener.onItemUnchecked(mlistContacts.get(position).getName(),mlistContacts.get(position).getNumber());
             }
         });
 

@@ -34,7 +34,7 @@ public class GroupListViewModel extends ViewModel {
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return null;
+            return (T) new GroupListViewModel(contxt);
         }
     }
 }

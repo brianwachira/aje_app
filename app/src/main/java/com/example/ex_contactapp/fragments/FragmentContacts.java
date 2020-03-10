@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -27,7 +28,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ex_contactapp.R;
 import com.example.ex_contactapp.adapters.ContactsRvAdapter;
 import com.example.ex_contactapp.models.ModelContacts;
+import com.example.ex_contactapp.models.ModelContactsBuffer;
 import com.example.ex_contactapp.viewmodels.ContactGroupViewModel;
+import com.example.ex_contactapp.viewmodels.GroupListViewModel;
 import com.example.ex_contactapp.viewmodels.SharedViewModel;
 
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
     private RecyclerView recyclerView;
 
-    private List<String> currentSelectedContacts = new ArrayList<>();
+    private List<ModelContactsBuffer> currentSelectedContacts = new ArrayList<>();
 
     ContactsRvAdapter adapter;
 
@@ -55,10 +58,15 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
     private ContactGroupViewModel contactGroupViewModel;
 
+    private ModelContactsBuffer modelContactsBuffer;
+
+    private GroupListViewModel groupListViewModel;
+
     public FragmentContacts() {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -95,6 +103,7 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
         sharedViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(SharedViewModel.class);
         contactGroupViewModel = ViewModelProviders.of(this, new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
+        groupListViewModel = ViewModelProviders.of(this,new GroupListViewModel.Factory(getActivity().getApplicationContext())).get(GroupListViewModel.class);
 
             buttonCreateGroup.setOnClickListener(v -> {
 
@@ -102,7 +111,10 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
                 if (editTextGroupName.getText().toString().length() > 2) {
                     if(currentSelectedContacts.size() > 4){
                         contactGroupViewModel.createGroup(editTextGroupName.getText().toString(),String.valueOf(currentSelectedContacts.size()));
-                        clearFields();
+                        Integer groupId = contactGroupViewModel.readGroupId(editTextGroupName.getText().toString());
+
+                        insertGrouplist(groupId);
+                        //clearFields();
                     }else{
                         new AlertDialog.Builder(this.getActivity())
                                 .setIcon(R.drawable.ic_error)
@@ -186,15 +198,44 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
     }
 
     @Override
-    public void onItemChecked(String contactId) {
-        currentSelectedContacts.add(contactId);
-        //Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
+    public void onItemChecked(String name, String phonenumber) {
+        String firstName = " ";
+        String lastName = " ";
+
+        if(name.split("\\w+").length>1){
+            lastName = name.substring(name.lastIndexOf(" ")+1);
+            firstName = name.substring(0,name.lastIndexOf(' '));
+        }else{
+            firstName = name;
+            lastName = "null";
+        }
+
+        modelContactsBuffer = new ModelContactsBuffer(firstName,lastName,phonenumber);
+        currentSelectedContacts.add(modelContactsBuffer);
+        //currentSelectedContacts.add(contactId);
+        Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public void onItemUnchecked(String contactId) {
-        currentSelectedContacts.remove(contactId);
-        //Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
+    public void onItemUnchecked(String name, String phonenumber) {
+        String firstName = " ";
+        String lastName = " ";
+
+        if(name.split("\\w+").length>1){
+            lastName = name.substring(name.lastIndexOf(" ")+1);
+            firstName = name.substring(0,name.lastIndexOf(' '));
+        }else{
+            firstName = name;
+            lastName =  "null";
+        }
+
+        //modelContactsBuffer = new ModelContactsBuffer(firstName,lastName,phonenumber);
+            currentSelectedContacts.removeIf( currentSelectedContact -> currentSelectedContact.getPhoneNumber().equals(phonenumber));
+
+        //currentSelectedContacts.remove(contactId);
+        Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
     }
 
     public void clearFields(){
@@ -203,6 +244,17 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
         //adapter.notifyDataSetChanged();
         currentSelectedContacts.clear();
 
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void insertGrouplist(int groupId){
+
+        currentSelectedContacts.forEach((currentSelectedContact)->{
+        groupListViewModel.createGroupList(currentSelectedContact.getFirstName(),currentSelectedContact.getLastName(),"null",currentSelectedContact.getPhoneNumber(),groupId);
+        });
+
+        clearFields();
 
     }
 

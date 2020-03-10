@@ -20,6 +20,7 @@ public class ContactGroup {
     private Integer id;
 
     @NonNull
+
     private String groupname;
 
     @NonNull
