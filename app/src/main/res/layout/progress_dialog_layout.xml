@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:layout_width="match_parent" android:layout_height="match_parent">
+    <TableRow android:id="@+id/tablayout" android:layout_width="match_parent" android:layout_height="64dp" android:layout_marginBottom="50dp" android:layout_centerInParent="true">
+        <ProgressBar android:id="@+id/progressBar" android:layout_width="wrap_content" android:layout_height="match_parent" style="?android:attr/progressBarStyle"/>
+        <TextView android:textSize="18sp" android:gravity="left|center_vertical|center_horizontal|center" android:id="@+id/progressBarMessage" android:layout_width="match_parent" android:layout_height="match_parent" android:text="Loading, please wait ..."/>
+    </TableRow>
+    <TableRow android:gravity="center" android:id="@+id/tablayout2" android:visibility="invisible" android:layout_width="match_parent" android:layout_height="64dp" android:layout_below="@+id/tablayout">
+        <Button android:textSize="18sp" android:id="@+id/dismissButton" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="Ok"/>
+    </TableRow>
+</RelativeLayout>

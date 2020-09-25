@@ -91,9 +91,6 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
 
         }
 
-
-
-
         public void bind(final Integer id,  final RecyclerViewTappedListener mListener){
 
             itemView.setOnClickListener(new View.OnClickListener() {

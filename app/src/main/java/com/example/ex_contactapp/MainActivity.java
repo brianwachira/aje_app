@@ -13,6 +13,7 @@ import com.example.ex_contactapp.fragments.FragmentCalls;
 import com.example.ex_contactapp.fragments.FragmentContactGroups;
 import com.example.ex_contactapp.fragments.FragmentContacts;
 import com.example.ex_contactapp.fragments.FragmentFav;
+import com.example.ex_contactapp.fragments.FragmentMessage;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.addFragment(new FragmentCalls(),"Calls");
         adapter.addFragment(new FragmentContacts(),"Contacts");
-        adapter.addFragment(new FragmentFav(),"Fav");
+        adapter.addFragment(new FragmentMessage(),"Messag");
         adapter.addFragment(new FragmentContactGroups(),"Groups");
 
 
