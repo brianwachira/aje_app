@@ -16,38 +16,59 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ex_contactapp.R;
 import com.example.ex_contactapp.adapters.DialogContactsRvAdapter;
+import com.example.ex_contactapp.data.Entities.ContactGroup;
+import com.example.ex_contactapp.data.Entities.Grouplist;
+import com.example.ex_contactapp.data.Relations.ContactGroupAndGroupList;
 import com.example.ex_contactapp.models.ModelDialogContacts;
+import com.example.ex_contactapp.viewmodels.ContactGroupViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentDialogContacts extends DialogFragment implements DialogContactsRvAdapter.DialogCheckedStatusListener {
 
+    private static String dialogTitle;
+
+    private static Integer groupId;
     private View v;
 
     private RecyclerView recyclerView;
 
-    private static List<String> currentSelectedContacts = new ArrayList<>();
+    private static List<Grouplist> currentSelectedContacts = new ArrayList<>();
 
     DialogContactsRvAdapter adapter;
+
+
+     ContactGroup selectedContactGroup;
+     LiveData<List<ContactGroupAndGroupList>> contactGroupAndGroupList;
+     ContactGroupViewModel contactGroupViewModel;
+
+
+
+
 
     public FragmentDialogContacts(){
 
     }
 
-    public static FragmentDialogContacts newInstance(String title, List<String> contactIdList){
+    public static FragmentDialogContacts newInstance(int id){
 
         FragmentDialogContacts fragmentDialogContacts = new FragmentDialogContacts();
         Bundle args = new Bundle();
-        args.putString("title",title);
+
+        groupId = id;
+        args.putString("title",dialogTitle);
         fragmentDialogContacts.setArguments(args);
 
-        currentSelectedContacts = contactIdList;
+
+
 
         return fragmentDialogContacts;
     }
@@ -64,18 +85,30 @@ public class FragmentDialogContacts extends DialogFragment implements DialogCont
 
         recyclerView.setLayoutManager(layoutManager);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M &&
-                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+        contactGroupViewModel = ViewModelProviders.of(this,new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
 
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_CONTACTS},1);
-        } else {
+        //contactGroupAndGroupList = contactGroupViewModel.readGroupAndContacts(groupId);
+
+        contactGroupViewModel.readGroupAndContacts(groupId).observe(this,contactGroupAndGroupLists ->
+
+
+                );
+        //selectedContactGroup = contactGroupAndGroupList.observe(this,);
+
+
+
 
         adapter = new DialogContactsRvAdapter(getContext(), getSelectedContacts(), this);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-    }
+
         return v;
     }
+    public void setContactDetailsNeeded(ContactGroup contactGroup, List<Grouplist> grouplist){
+        selectedContactGroup = contactGroup;
+        currentSelectedContacts = grouplist;
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

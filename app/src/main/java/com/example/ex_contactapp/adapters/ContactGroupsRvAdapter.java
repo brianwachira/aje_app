@@ -37,7 +37,7 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
     }
 
     public interface RecyclerViewTappedListener{
-        void onRecyclerViewTapped(String groupName,List<String> contactIdList);
+        void onRecyclerViewTapped(int id);
         void onRecyclerViewLongClick(int id);
     }
 
@@ -70,7 +70,7 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
         //String sizeOfGroup = String.valueOf(mContactGroupsList.get(position).getContactIdList().size());
         contact_group_numof_members.setText(contactGroupLiveData.get(position).getNumofcontacts());
 
-        holder.bind(contactGroupLiveData.get(position).getId(),contactGroupLiveData.get(position).getGroupname(), Collections.singletonList(String.valueOf(contactGroupLiveData.get(position).getId())),mRecyclerViewClickedListener);
+        holder.bind(contactGroupLiveData.get(position).getId(),mRecyclerViewClickedListener);
 
         //holder.bindanother(Integer.parseInt(contactGroupLiveData.get(position).getId().toString()),mRecyclerViewLongClickedListener);
     }
@@ -94,12 +94,12 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
 
 
 
-        public void bind(final Integer id, final String groupName,final List<String> contactIdList, final RecyclerViewTappedListener mListener){
+        public void bind(final Integer id,  final RecyclerViewTappedListener mListener){
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onRecyclerViewTapped(groupName,contactIdList);
+                    mListener.onRecyclerViewTapped(id);
                     //Toast.makeText(mContext, contactIdList + " ", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -109,17 +109,6 @@ public class ContactGroupsRvAdapter extends RecyclerView.Adapter<ContactGroupsRv
                 public boolean onLongClick(View v) {
 
                     mListener.onRecyclerViewLongClick(id);
-                    return false;
-                }
-            });
-        }
-
-        public void bindanother(final int id, final RecyclerViewLongClickedListener mRecyclerViewLongClickedListener) {
-            itemView.setOnLongClickListener(new View.OnLongClickListener(){
-
-                @Override
-                public boolean onLongClick(View v) {
-                    mRecyclerViewLongClickedListener.onRecyclerViewLongClick(id);
                     return false;
                 }
             });

@@ -23,4 +23,8 @@ public class GroupListRepository {
         grouplistDAO.insertGroupList(grouplist);
 
     }
+
+    public void deleteContact(int id) {
+        grouplistDAO.deleteGroupContact(id);
+    }
 }

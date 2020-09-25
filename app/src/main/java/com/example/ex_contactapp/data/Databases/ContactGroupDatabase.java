@@ -25,7 +25,7 @@ public abstract class ContactGroupDatabase extends RoomDatabase {
 
         if(INSTANCE == null){
 
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),ContactGroupDatabase.class,"ajeapp_db").allowMainThreadQueries().build();
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),ContactGroupDatabase.class,"ajeapp_db").fallbackToDestructiveMigration().allowMainThreadQueries().build();
         }
         return INSTANCE;
     }

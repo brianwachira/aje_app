@@ -34,8 +34,9 @@ public class Message {
      */
 
     @Ignore
-    public Message(@NonNull String messageContent) {
+    public Message(@NonNull String messageContent,Integer groupid) {
         this.messageContent = messageContent;
+        this.groupid = groupid;
     }
 
 
