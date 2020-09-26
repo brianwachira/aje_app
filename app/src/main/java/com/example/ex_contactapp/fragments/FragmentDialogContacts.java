@@ -32,7 +32,7 @@ public class FragmentDialogContacts extends DialogFragment implements DialogCont
     private static String dialogTitle;
     private static Integer groupId;
     DialogContactsRvAdapter adapter;
-    LiveData<List<ContactGroupAndGroupList>> contactGroupAndGroupList;
+    LiveData<ContactGroupAndGroupList> contactGroupAndGroupList;
     ContactGroupViewModel contactGroupViewModel;
     GroupListViewModel groupListViewModel;
     private RecyclerView recyclerView;
@@ -58,29 +58,17 @@ public class FragmentDialogContacts extends DialogFragment implements DialogCont
         this.groupListViewModel = (GroupListViewModel) ViewModelProviders.of((Fragment) this, (ViewModelProvider.Factory) new GroupListViewModel.Factory(((FragmentActivity) Objects.requireNonNull(getActivity())).getApplicationContext())).get(GroupListViewModel.class);
         ContactGroupViewModel contactGroupViewModel2 = (ContactGroupViewModel) ViewModelProviders.of((Fragment) this, (ViewModelProvider.Factory) new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
         this.contactGroupViewModel = contactGroupViewModel2;
-        LiveData<List<ContactGroupAndGroupList>> readGroupAndContacts = contactGroupViewModel2.readGroupAndContacts(groupId);
+        LiveData<ContactGroupAndGroupList> readGroupAndContacts = contactGroupViewModel2.readGroupAndContacts(groupId);
         this.contactGroupAndGroupList = readGroupAndContacts;
 
-        this.contactGroupAndGroupList.observe(this, new Observer<List<ContactGroupAndGroupList>>() {
-            @Override
-            public void onChanged(List<ContactGroupAndGroupList> contactGroupAndGroupLists) {
-                for(ContactGroupAndGroupList list : contactGroupAndGroupLists){
-                    setContactDetailsNeeded(list.getContactGroup(),list.getGrouplist());
-                }
-            }
+        this.contactGroupAndGroupList.observe(this, contactGroupAndGroupLists ->{
+            setContactDetailsNeeded(contactGroupAndGroupLists.getContactGroup(),contactGroupAndGroupLists.getGrouplist());
+
         });
 
-//        readGroupAndContacts.observe(this, new Observer() {
-//            public final void onChanged(Object obj) {
-//                FragmentDialogContacts.this.lambda$onCreateView$0$FragmentDialogContacts((ContactGroupAndGroupList) obj);
-//            }
-//        });
         return this.f51v;
     }
 
-//    public /* synthetic */ void lambda$onCreateView$0$FragmentDialogContacts(ContactGroupAndGroupList contactGroupAndGroupLists) {
-//        setContactDetailsNeeded(contactGroupAndGroupLists.getContactGroup(), contactGroupAndGroupLists.getGrouplist());
-//    }
 
     public void setContactDetailsNeeded(ContactGroup contactGroup, List<Grouplist> grouplist) {
         this.selectedContactGroup = contactGroup;

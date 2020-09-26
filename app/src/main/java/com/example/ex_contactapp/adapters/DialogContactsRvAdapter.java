@@ -14,9 +14,9 @@ import com.example.ex_contactapp.data.Entities.Grouplist;
 import java.util.List;
 
 public class DialogContactsRvAdapter extends RecyclerView.Adapter<DialogContactsRvAdapter.ViewHolder> {
-    private List<Grouplist> groupList;
-    private LayoutInflater inflater;
     private Context mdialogContext;
+    private LayoutInflater inflater;
+    private List<Grouplist> groupList;
     private DialogItemListener mdialogItemListener;
 
 
@@ -25,15 +25,15 @@ public class DialogContactsRvAdapter extends RecyclerView.Adapter<DialogContacts
     }
 
     public DialogContactsRvAdapter(Context context, List<Grouplist> mgrouplist, DialogItemListener dialogItemListener) {
-        this.groupList = mgrouplist;
-        this.mdialogContext = context;
-        this.mdialogItemListener = dialogItemListener;
+        mdialogContext = context;
+        groupList = mgrouplist;
+        mdialogItemListener = dialogItemListener;
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         inflater = LayoutInflater.from(mdialogContext);
 
-        View view = inflater.inflate(R.layout.item_contact_groups,parent,false);
+        View view = inflater.inflate(R.layout.items_dialog_contacts,parent,false);
 
         ViewHolder viewHolder = new ViewHolder(view);
 
@@ -41,7 +41,7 @@ public class DialogContactsRvAdapter extends RecyclerView.Adapter<DialogContacts
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull  DialogContactsRvAdapter.ViewHolder holder, int position) {
 
         final TextView dialog_contact_name,dialog_contact_number;
         final Button dialogContactDelete;
@@ -50,11 +50,11 @@ public class DialogContactsRvAdapter extends RecyclerView.Adapter<DialogContacts
         dialog_contact_number = holder.dialogContact_number;
         dialogContactDelete = holder.dialogContactDelete;
 
-        dialog_contact_name.setText("wasgood");
-        //dialog_contact_name.setText(groupList.get(position).getFirstName() + " " + groupList.get(position).getMiddleName() + " " + groupList.get(position).getLastName());
-        //dialog_contact_number.setText(groupList.get(position).getPhoneNumber());
+        //holder.dialogContact_name.setText("wasgood");
+        dialog_contact_name.setText(groupList.get(position).getFirstName() + " " + groupList.get(position).getMiddleName() + " " + groupList.get(position).getLastName());
+        dialog_contact_number.setText(groupList.get(position).getPhoneNumber());
 
-        dialogContactDelete.setOnClickListener((View.OnClickListener) mdialogContext.getApplicationContext());
+        //dialogContactDelete.setOnClickListener((View.OnClickListener) mdialogContext.getApplicationContext());
         holder.bind(this.groupList.get(position).getContactid(), mdialogItemListener);
 
     }

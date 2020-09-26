@@ -29,7 +29,7 @@ public interface ContactGroupDao {
 
     @Transaction
     @Query("SELECT * FROM contactgroup WHERE contactgroup.id=:id")
-    LiveData<List<ContactGroupAndGroupList>> getContactGroupAndContactsById(int id);
+    LiveData<ContactGroupAndGroupList> getContactGroupAndContactsById(int id);
 
     @Transaction
     @Query("SELECT * FROM contactgroup")

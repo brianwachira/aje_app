@@ -49,7 +49,7 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
     String SENT_ACTION = "SMS_SENT_ACTION";
     ArrayAdapter<ContactGroup> arrayAdapter;
     ChipGroup chipGroup;
-    LiveData<List<ContactGroupAndGroupList>> contactGroupAndGroupList;
+    LiveData<ContactGroupAndGroupList> contactGroupAndGroupList;
     Spinner contactGroupSpinner;
     ContactGroupViewModel contactGroupViewModel;
     private EditText editTextmessage;
@@ -69,34 +69,30 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.frag_message, container, false);
         this.v = inflate;
-        this.firstNameButton = (Button) inflate.findViewById(R.id.includeFirstname);
-        this.lastNameButton = (Button) this.v.findViewById(R.id.includelastname);
-        this.smsButton = (ImageButton) this.v.findViewById(R.id.message_icon);
-        this.editTextmessage = (EditText) this.v.findViewById(R.id.messageText);
-        this.chipGroup = (ChipGroup) this.v.findViewById(R.id.chip_group);
-        this.contactGroupSpinner = (Spinner) this.v.findViewById(R.id.contact_group_spinner);
-        ContactGroupViewModel contactGroupViewModel2 = (ContactGroupViewModel) ViewModelProviders.of((Fragment) this, (ViewModelProvider.Factory) new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
+        this.firstNameButton = v.findViewById(R.id.includeFirstname);
+        this.lastNameButton = v.findViewById(R.id.includelastname);
+        this.smsButton = v.findViewById(R.id.message_icon);
+        this.editTextmessage = v.findViewById(R.id.messageText);
+        this.chipGroup = v.findViewById(R.id.chip_group);
+        this.contactGroupSpinner = v.findViewById(R.id.contact_group_spinner);
+        ContactGroupViewModel contactGroupViewModel2 = ViewModelProviders.of((Fragment) this, (ViewModelProvider.Factory) new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
         this.contactGroupViewModel = contactGroupViewModel2;
-        contactGroupViewModel2.readGroup().observe(this, new Observer() {
-            public final void onChanged(Object obj) {
-                FragmentMessage.this.setSpinnerAdapter((List) obj);
-            }
-        });
-        this.messageConstraintLayout = (ConstraintLayout) this.v.findViewById(R.id.message_layout);
-        this.progressBarMessage = (ProgressBar) this.v.findViewById(R.id.progressBar);
-        checkForSmsPermission();
-        this.firstNameButton.setOnClickListener(new View.OnClickListener() {
-            public final void onClick(View view) {
-                appendFirstName();
 
+        this.contactGroupViewModel.readGroup().observe(this, new Observer<List<ContactGroup>>() {
+            @Override
+            public void onChanged(List<ContactGroup> contactGroups) {
+                FragmentMessage.this.setSpinnerAdapter(contactGroups);
             }
         });
+
+        this.messageConstraintLayout = v.findViewById(R.id.message_layout);
+        this.progressBarMessage = v.findViewById(R.id.progressBar);
+        checkForSmsPermission();
+        this.firstNameButton.setOnClickListener(view -> appendFirstName());
         this.lastNameButton.setOnClickListener(view -> appendLastName());
-        this.smsButton.setOnClickListener(new View.OnClickListener() {
-            public final void onClick(View view) {
-                message = editTextmessage.getText().toString();
-                new sendSms(new ModelMessages(grouplistToUse, message)).execute();
-            }
+        this.smsButton.setOnClickListener(view -> {
+            message = editTextmessage.getText().toString();
+            new sendSms(new ModelMessages(grouplistToUse, message)).execute();
         });
         return this.v;
     }
@@ -141,7 +137,7 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
         }, new IntentFilter(this.DELIVERED_ACTION));
         SmsManager smsManager = SmsManager.getDefault();
         for (Grouplist grouplistnumber : grouplistToUse2) {
-            smsManager.sendTextMessage(grouplistnumber.getPhoneNumber(), (String) null, message2, sentIntent, deliveryIntent);
+            smsManager.sendTextMessage(grouplistnumber.getPhoneNumber(), null, message2, sentIntent, deliveryIntent);
         }
     }
 
@@ -160,7 +156,8 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
 
     /* access modifiers changed from: private */
     public void setSpinnerAdapter(List<ContactGroup> contactGroups) {
-        ArrayAdapter<ContactGroup> arrayAdapter2 = new ArrayAdapter<>((Context) Objects.requireNonNull(getActivity()), R.layout.support_simple_spinner_dropdown_item, contactGroups);
+
+        ArrayAdapter<ContactGroup> arrayAdapter2 = new ArrayAdapter<>( Objects.requireNonNull(getActivity()), R.layout.support_simple_spinner_dropdown_item, contactGroups);
         this.arrayAdapter = arrayAdapter2;
         arrayAdapter2.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         this.contactGroupSpinner.setAdapter(this.arrayAdapter);
@@ -233,18 +230,15 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
         Integer id2 = ((ContactGroup) parent.getItemAtPosition(position)).getId();
         groupId = id2;
-        LiveData<List<ContactGroupAndGroupList>> readGroupAndContacts = this.contactGroupViewModel.readGroupAndContacts(id2);
+        LiveData<ContactGroupAndGroupList> readGroupAndContacts = this.contactGroupViewModel.readGroupAndContacts(id2);
         this.contactGroupAndGroupList = readGroupAndContacts;
-        readGroupAndContacts.observe(this, new Observer() {
-            public final void onChanged(Object obj) {
-                Toast.makeText(FragmentMessage.this.getContext(), "report", Toast.LENGTH_SHORT).show();
-                //FragmentMessage.this.lambda$onItemSelected$3$FragmentMessage((ContactGroupAndGroupList) obj);
-            }
-        });
-    }
 
-    public /* synthetic */ void lambda$onItemSelected$3$FragmentMessage(ContactGroupAndGroupList contactGroupAndGroupList1) {
-        setContactDetailsNeeded(contactGroupAndGroupList1.getContactGroup(), contactGroupAndGroupList1.getGrouplist());
+        this.contactGroupAndGroupList.observe(this, contactGroupAndGroupLists -> {
+
+                setContactDetailsNeeded(contactGroupAndGroupLists.getContactGroup(),contactGroupAndGroupLists.getGrouplist());
+
+        });
+
     }
 
     public void onNothingSelected(AdapterView<?> adapterView) {

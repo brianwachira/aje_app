@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.addFragment(new FragmentCalls(),"Calls");
         adapter.addFragment(new FragmentContacts(),"Contacts");
-        adapter.addFragment(new FragmentMessage(),"Messag");
+        adapter.addFragment(new FragmentMessage(),"Message");
         adapter.addFragment(new FragmentContactGroups(),"Groups");
 
 

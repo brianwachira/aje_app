@@ -41,7 +41,7 @@ public class ContactGroupViewModel extends ViewModel {
         return contactGroupRepository.readGroupId(name);
     }
 
-    public LiveData<List<ContactGroupAndGroupList>>readGroupAndContacts(Integer id){
+    public LiveData<ContactGroupAndGroupList>readGroupAndContacts(Integer id){
         return contactGroupRepository.readContactGroupAndContactsById(id);
     }
 

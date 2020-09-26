@@ -41,7 +41,7 @@ public class ContactGroupRepository {
         contactGroupDao.deleteContactGroup(id);
     }
 
-    public LiveData<List<ContactGroupAndGroupList>> readContactGroupAndContactsById(int id){
+    public LiveData<ContactGroupAndGroupList> readContactGroupAndContactsById(int id){
         return contactGroupDao.getContactGroupAndContactsById(id);
     }
 
