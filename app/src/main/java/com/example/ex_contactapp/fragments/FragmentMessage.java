@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,12 +35,14 @@ import com.example.ex_contactapp.R;
 import com.example.ex_contactapp.data.Entities.ContactGroup;
 import com.example.ex_contactapp.data.Entities.Grouplist;
 import com.example.ex_contactapp.data.Relations.ContactGroupAndGroupList;
+import com.example.ex_contactapp.models.ModelMessageParameters;
 import com.example.ex_contactapp.models.ModelMessages;
 import com.example.ex_contactapp.viewmodels.ContactGroupViewModel;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class FragmentMessage extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -63,6 +66,8 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
     RelativeLayout relativeLayout;
     private ImageButton smsButton;
 
+    List<ModelMessageParameters> messageParametersList;
+
     /* renamed from: v */
     private View v;
 
@@ -77,6 +82,7 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
         this.contactGroupSpinner = v.findViewById(R.id.contact_group_spinner);
         ContactGroupViewModel contactGroupViewModel2 = ViewModelProviders.of((Fragment) this, (ViewModelProvider.Factory) new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
         this.contactGroupViewModel = contactGroupViewModel2;
+        messageParametersList = new ArrayList<>();
 
         this.contactGroupViewModel.readGroup().observe(this, new Observer<List<ContactGroup>>() {
             @Override
@@ -93,16 +99,30 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
         this.smsButton.setOnClickListener(view -> {
             message = editTextmessage.getText().toString();
             new sendSms(new ModelMessages(grouplistToUse, message)).execute();
+            editTextmessage.setText("");
         });
         return this.v;
     }
 
     public void appendFirstName(){
-        this.editTextmessage.append(" 'fn'");
+        String message = editTextmessage.getText().toString();
+
+        ModelMessageParameters modelMessageParameters = new ModelMessageParameters(message.length(),"fn");
+
+        messageParametersList.add(modelMessageParameters);
+
+        editTextmessage.append("'includeFirstName'");
+
     }
 
     public void appendLastName(){
-        this.editTextmessage.append(" 'ln'");
+        String message = editTextmessage.getText().toString();
+
+        ModelMessageParameters modelMessageParameters = new ModelMessageParameters(message.length(),"ln");
+
+        messageParametersList.add(modelMessageParameters);
+        editTextmessage.append("'includeLastName'");
+
 
     }
     private void sendMessage(List<Grouplist> grouplistToUse2, String message2) {
@@ -305,10 +325,16 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
                 }
             }, new IntentFilter(FragmentMessage.this.DELIVERED_ACTION));
             SmsManager smsManager = SmsManager.getDefault();
+            String theMessageToSend="";
             for (Grouplist grouplist : this.modelMessages.getGrouplistToUse()) {
-                smsManager.sendTextMessage(grouplist.getPhoneNumber(), (String) null, this.modelMessages.getMessage(), sentIntent, deliveryIntent);
-                List<String> list = this.messageReport;
-                list.add(grouplist.getFirstName() + " " + grouplist.getLastName() + " -> " + this.statusReport);
+                if(modelMessages.getMessage().contains("'includeFirstName'")){
+                    theMessageToSend=modelMessages.getMessage().replace("'includeFirstName'",grouplist.getFirstName());
+                }else if(modelMessages.getMessage().contains("'includeLastName'")){
+                    theMessageToSend=modelMessages.getMessage().replace("'includeLastName'",grouplist.getLastName());
+                }
+                    smsManager.sendTextMessage(grouplist.getPhoneNumber(), (String) null, theMessageToSend, sentIntent, deliveryIntent);
+                    List<String> list = this.messageReport;
+                    list.add(grouplist.getFirstName() + " " + grouplist.getLastName() + " -> " + this.statusReport);
             }
             return null;
         }
