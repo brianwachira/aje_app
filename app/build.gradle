@@ -38,4 +38,11 @@ dependencies {
     //RoomDB
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+
+    //social login
+    implementation 'com.github.KosyanMedia.android-sociallogin:sociallogin:1.1.0'
+    implementation 'com.github.KosyanMedia.android-sociallogin:facebook:1.1.0'
+    implementation 'com.github.KosyanMedia.android-sociallogin:google:1.1.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+
 }
