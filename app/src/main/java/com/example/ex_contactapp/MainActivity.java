@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import com.example.ex_contactapp.fragments.FragmentContacts;
 import com.example.ex_contactapp.fragments.FragmentFav;
 import com.example.ex_contactapp.fragments.FragmentMessage;
 import com.google.android.material.tabs.TabLayout;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
             TabLayout.Tab tab = tabLayout.getTabAt(count);
             tab.setIcon(ICONS[count]);
         }
+
+//        Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+//        startActivity(loginIntent);
+//        finish();
     }
     private void askPermissions(){
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
