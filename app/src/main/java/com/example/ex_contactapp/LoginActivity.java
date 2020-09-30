@@ -1,18 +1,35 @@
 package com.example.ex_contactapp;
 
 import android.Manifest;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.media.browse.MediaBrowser;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.ex_contactapp.utils.SaveSharedPreferences;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.internal.ConnectionCallbacks;
+import com.google.android.gms.tasks.Task;
 import com.jetradarmobile.sociallogin.SocialLogin;
 import com.jetradarmobile.sociallogin.SocialLoginCallback;
 import com.jetradarmobile.sociallogin.SocialLoginError;
@@ -29,11 +46,29 @@ import java.util.List;
 
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, SocialLoginCallback {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, SocialLoginCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     private TextView info;
     ImageButton facebookLoginButton;
     Button googleButton;
+    TextView skipButton;
+
+    private GoogleApiClient googleApiClient;
+
+    private static final int RC_SIGN_IN = 0;
+
+    private static final int SIGNED_IN = 0;
+    private static final int STATE_SIGNING_IN = 1;
+    private static final int STATE_IN_PROGRESS = 2;
+    private static final int RC_SIGN_IN2 = 0;
+
+    private GoogleApiClient mGoogleApiClient;
+    private int mSignInProgress;
+    private PendingIntent mSignInIntent;
+
+    Button googleButtonSignIn;
+    GoogleSignInClient googleSignInClient;
+
 
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,9 +82,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         googleButton = findViewById(R.id.googleButton);
 
+        skipButton = findViewById(R.id.skipButton);
+
+        skipButton.setOnClickListener(this);
+
         facebookLoginButton.setOnClickListener(this);
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .build();
+
+
+        googleButton.setOnClickListener(this);
+
+        googleSignInClient = GoogleSignIn.getClient(this,gso);
+
+
+        //Check if user is already logged in
+        if(SaveSharedPreferences.getLoggedStatus(getApplicationContext())){
+
+            Intent mainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(mainActivityIntent);
+
+        }
     }
 
     @Override
@@ -58,14 +118,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()){
             case R.id.facebookButton:
                 ImageButton facebookLoginButton= findViewById(R.id.facebookButton);
-                    List<String> permissions = Arrays.asList("public_profile");
-                    SocialLogin.Factory.getInstance().loginTo(this,new FacebookNetwork(permissions),this);
+                    //List<String> permissions = Arrays.asList("public_profile");
+                    //SocialLogin.Factory.getInstance().loginTo(this,new FacebookNetwork(permissions),this);
+                    //SocialLogin.Factory.getInstance().loginTo(this,new GoogleNetwork(" 245224874175-8mqgc3lhi1q1mo59g5cj4uuro71dckc1.apps.googleusercontent.com "),this);
+
+                    Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                    startActivityForResult(intent,RC_SIGN_IN);
                     break;
             case R.id.googleButton:
-                    SocialLogin.Factory.getInstance().loginTo(this,new GoogleNetwork())
+                    LoginActivity.this.signIn();
                     break;
+            case R.id.skipButton:
+
+                Intent mainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(mainActivityIntent);
+
         }
 
+    }
+
+    private void signIn() {
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent,RC_SIGN_IN);
     }
 
     @Override
@@ -91,5 +165,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
     private void displayError(String error){
         info.setText(error);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+        Toast.makeText(getApplicationContext(),connectionResult.getErrorMessage(),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == RC_SIGN_IN){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> task) {
+
+        try{
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            Toast.makeText(getApplicationContext(),"Welcome" + account.getGivenName(),Toast.LENGTH_LONG).show();
+
+            SaveSharedPreferences.setId(getApplicationContext(),account.getId());
+            SaveSharedPreferences.setName(getApplicationContext(),account.getGivenName());
+            SaveSharedPreferences.setLoggedIn(getApplicationContext(),true);
+            Intent mainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(mainActivityIntent);
+
+        }catch (ApiException e){
+
+            Log.w("Google Sign In Error","signInResult:failed code="+ e.getStatusCode());
+            Toast.makeText(getApplicationContext(),"Failed",Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 }

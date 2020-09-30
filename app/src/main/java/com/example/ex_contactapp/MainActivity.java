@@ -15,6 +15,7 @@ import com.example.ex_contactapp.fragments.FragmentContactGroups;
 import com.example.ex_contactapp.fragments.FragmentContacts;
 import com.example.ex_contactapp.fragments.FragmentFav;
 import com.example.ex_contactapp.fragments.FragmentMessage;
+import com.example.ex_contactapp.fragments.FragmentProfile;
 import com.google.android.material.tabs.TabLayout;
 
 
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private final int[] ICONS = {R.drawable.ic_call,R.drawable.ic_contacts,R.drawable.ic_star,R.drawable.ic_group};
+    private final int[] ICONS = {R.drawable.ic_call,R.drawable.ic_contacts,R.drawable.ic_star,R.drawable.ic_group,R.drawable.ic_group};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new FragmentContacts(),"Contacts");
         adapter.addFragment(new FragmentMessage(),"Message");
         adapter.addFragment(new FragmentContactGroups(),"Groups");
+        adapter.addFragment(new FragmentProfile(),"Profile");
 
 
         viewPager.setAdapter(adapter);
