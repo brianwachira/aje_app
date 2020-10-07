@@ -18,7 +18,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.example.ex_contactapp.data.User;
 import com.example.ex_contactapp.utils.SaveSharedPreferences;
+import com.example.ex_contactapp.utils.SharedPreferenceManager;
+import com.example.ex_contactapp.volley.URLs;
+import com.example.ex_contactapp.volley.VolleySingleton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -39,11 +48,14 @@ import com.jetradarmobile.sociallogin.facebook.FacebookNetwork;
 import com.jetradarmobile.sociallogin.google.GoogleNetwork;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, SocialLoginCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
@@ -104,7 +116,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
         //Check if user is already logged in
-        if(SaveSharedPreferences.getLoggedStatus(getApplicationContext())){
+//        if(SaveSharedPreferences.getLoggedStatus(getApplicationContext())){
+//
+//            Intent mainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
+//            startActivity(mainActivityIntent);
+//
+//        }
+
+        if(SharedPreferenceManager.getInstance(this).isLoggedIn()){
 
             Intent mainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(mainActivityIntent);
@@ -188,13 +207,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         try{
             GoogleSignInAccount account = task.getResult(ApiException.class);
-            Toast.makeText(getApplicationContext(),"Welcome" + account.getGivenName(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Welcome " + account.getId(),Toast.LENGTH_LONG).show();
 
-            SaveSharedPreferences.setId(getApplicationContext(),account.getId());
-            SaveSharedPreferences.setName(getApplicationContext(),account.getGivenName());
-            SaveSharedPreferences.setLoggedIn(getApplicationContext(),true);
-            Intent mainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
-            startActivity(mainActivityIntent);
+//            SaveSharedPreferences.setId(getApplicationContext(),account.getId());
+//            SaveSharedPreferences.setName(getApplicationContext(),account.getGivenName());
+//            SaveSharedPreferences.setLoggedIn(getApplicationContext(),true);
+            login(account.getId(),account.getGivenName());
 
         }catch (ApiException e){
 
@@ -203,6 +221,66 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }
     }
+
+    private void login(String id, String givenName) {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_LOGIN,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            Log.i("response",response);
+                            //converting response to json object
+                            JSONObject obj = new JSONObject(response);
+                            //if no error in response
+                            if (!obj.getBoolean("error")) {
+                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                //getting the user from the response
+                                JSONObject userJson = obj.getJSONObject("user");
+
+                                //creating a new user object
+
+                                User user = new User(
+                                        userJson.getInt("id"),
+                                        userJson.getString("givenName"),
+                                        userJson.getString("userId")
+                                );
+
+                                //storing the user in shared preferences
+                                SharedPreferenceManager.getInstance(getApplicationContext()).userLogin(user);
+
+                                //start the main activity
+                                Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(mainActivityIntent);
+                            } else {
+                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                    }){
+                    @Override
+                    protected Map<String,String> getParams()throws AuthFailureError{
+                        Map<String,String> params = new HashMap<>();
+                        params.put("userId",id);
+                        params.put("givenName",givenName);
+
+                        return params;
+                        }
+                    };
+                    VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+                }
+
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

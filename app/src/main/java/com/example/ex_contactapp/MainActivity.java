@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private final int[] ICONS = {R.drawable.ic_call,R.drawable.ic_contacts,R.drawable.ic_star,R.drawable.ic_group,R.drawable.ic_group};
+    private final int[] ICONS = {R.drawable.ic_call,R.drawable.ic_contacts,R.drawable.ic_star,R.drawable.ic_group,R.drawable.ic_person};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
