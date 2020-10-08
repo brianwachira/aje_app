@@ -62,6 +62,7 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
          contactGroupViewModel.readGroup().observe(this,contactGroups ->
                 //contactGroup = contactGroups);
 
+
                  setAdapter(new ContactGroupsRvAdapter(getContext(),contactGroups,this))
          );
 

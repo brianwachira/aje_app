@@ -8,6 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.example.ex_contactapp.data.DAO.ContactGroupDao;
 import com.example.ex_contactapp.data.DAO.GrouplistDAO;
+import com.example.ex_contactapp.data.DAO.MessageDAO;
 import com.example.ex_contactapp.data.Entities.ContactGroup;
 import com.example.ex_contactapp.data.Entities.Grouplist;
 import com.example.ex_contactapp.data.Entities.Message;
@@ -17,6 +18,7 @@ public abstract class ContactGroupDatabase extends RoomDatabase {
 
     public abstract ContactGroupDao contactGroupDao();
     public abstract GrouplistDAO grouplistDAO();
+    public abstract MessageDAO messageDAO();
 
 
     public static ContactGroupDatabase INSTANCE;

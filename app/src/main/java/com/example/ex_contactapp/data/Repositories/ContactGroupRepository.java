@@ -33,6 +33,11 @@ public class ContactGroupRepository {
         return contactGroupDao.getContactGroups();
     }
 
+    public List<ContactGroup> ReadContactGroupsForSync(){
+
+        return contactGroupDao.getContactGroupsForSync();
+    }
+
     public Integer readGroupId( String name){
         return  contactGroupDao.getGroupId(name);
     }

@@ -1,7 +1,12 @@
 package com.example.ex_contactapp.data.Repositories;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.ex_contactapp.data.DAO.MessageDAO;
+import com.example.ex_contactapp.data.Entities.ContactGroup;
 import com.example.ex_contactapp.data.Entities.Message;
+import com.example.ex_contactapp.data.Relations.ContactGroupAndGroupList;
+
 import java.util.List;
 
 public class MessageRepository {
@@ -23,7 +28,17 @@ public class MessageRepository {
         messageDAO.insertMessage(new Message(messageContent, groupId));
     }
 
-    public List<String> getMessagesById(int id) {
+    public void deleteMessage(int messageId){
+        messageDAO.deleteMessage(messageId);
+    }
+
+    public LiveData<List<Message>> ReadMessages(){
+
+        return messageDAO.getMessages();
+    }
+
+    public LiveData<Message> getMessagesById(int id) {
         return messageDAO.getMessagesById(id);
     }
+
 }

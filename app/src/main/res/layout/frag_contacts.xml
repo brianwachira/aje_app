@@ -6,17 +6,19 @@
 
     <GridLayout
         android:layout_width="wrap_content"
-        android:layout_height="100dp">
+        android:layout_height="100dp"
+        android:layout_margin="10dp">
 
         <EditText
             android:id="@+id/group_name"
             android:layout_width="263dp"
             android:layout_height="70dp"/>
+
         <Button
             android:id="@+id/button_create_group"
-            android:layout_width="wrap_content"
+            android:layout_width="122dp"
             android:layout_height="wrap_content"
-            android:text="@string/create_group"/>
+            android:text="@string/create_group" />
     </GridLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_contacts"

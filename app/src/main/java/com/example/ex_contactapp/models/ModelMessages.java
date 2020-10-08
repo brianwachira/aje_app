@@ -7,9 +7,20 @@ public class ModelMessages {
     private List<Grouplist> grouplistToUse;
     private String message;
 
-    public ModelMessages(List<Grouplist> grouplistToUse2, String message2) {
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    private int groupId;
+
+    public ModelMessages(List<Grouplist> grouplistToUse2, String message2, int groupId) {
         this.grouplistToUse = grouplistToUse2;
         this.message = message2;
+        this.groupId = groupId;
     }
 
     public List<Grouplist> getGrouplistToUse() {

@@ -37,6 +37,11 @@ public class ContactGroupViewModel extends ViewModel {
         return contactGroupRepository.ReadContactGroups();
     }
 
+    //getcontact group for sync
+    public List<ContactGroup> readGroupForSync(){
+        return contactGroupRepository.ReadContactGroupsForSync();
+    }
+
     public  Integer readGroupId(String name){
         return contactGroupRepository.readGroupId(name);
     }
