@@ -4,7 +4,10 @@ import android.content.Context;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.ex_contactapp.data.Databases.ContactGroupDatabase;
+import com.example.ex_contactapp.data.Entities.Grouplist;
 import com.example.ex_contactapp.data.Repositories.GroupListRepository;
+
+import java.util.List;
 
 public class GroupListViewModel extends ViewModel {
     private GroupListRepository groupListRepository;
@@ -19,6 +22,15 @@ public class GroupListViewModel extends ViewModel {
 
     public void deleteContactFromGroup(int id) {
         this.groupListRepository.deleteContact(id);
+    }
+
+    public List<Grouplist> getGroupListForSync(){
+        return this.groupListRepository.readGroupListForSync();
+    }
+
+    public List<Grouplist>readGroupListById(int id){
+
+        return this.groupListRepository.readGroupListById(id);
     }
 
     public static class Factory implements ViewModelProvider.Factory {

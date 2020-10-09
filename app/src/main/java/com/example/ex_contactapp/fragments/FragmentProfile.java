@@ -17,25 +17,31 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.example.ex_contactapp.LoginActivity;
-import com.example.ex_contactapp.MainActivity;
 import com.example.ex_contactapp.R;
-import com.example.ex_contactapp.adapters.ContactGroupsRvAdapter;
 import com.example.ex_contactapp.data.Entities.ContactGroup;
+import com.example.ex_contactapp.data.Entities.Grouplist;
 import com.example.ex_contactapp.data.User;
 import com.example.ex_contactapp.utils.SaveSharedPreferences;
 import com.example.ex_contactapp.utils.SharedPreferenceManager;
 import com.example.ex_contactapp.viewmodels.ContactGroupViewModel;
+import com.example.ex_contactapp.viewmodels.GroupListViewModel;
 import com.example.ex_contactapp.volley.URLs;
 import com.example.ex_contactapp.volley.VolleySingleton;
+import com.example.ex_contactapp.volley.VolleyContactGroup;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +54,16 @@ public class FragmentProfile extends Fragment {
     TextView accountName;
 
     ContactGroupViewModel contactGroupViewModel;
+    GroupListViewModel groupListViewModel;
+
     Button btnSync;
+    List<Grouplist> grouplistById;
     List<ContactGroup> contactGroupsForSync;
+    List<Grouplist> groupListForSync;
     User user;
+    int apiGroupId;
+
+    VolleyContactGroup volleycontactGroup;
 
     @Nullable
     @Override
@@ -63,11 +76,12 @@ public class FragmentProfile extends Fragment {
         name = SaveSharedPreferences.getGivenName(getContext());
         accountName.setText(name);
         contactGroupsForSync = new ArrayList<>();
-
+        groupListForSync = new ArrayList<>();
+        grouplistById = new ArrayList<>();
         if(SharedPreferenceManager.getInstance(getContext()).isLoggedIn()){
             user = SharedPreferenceManager.getInstance(getContext()).getUser();
 
-            accountName.setText(user.getGivenName());
+            accountName.setText(user.getGivenName() + " " + user.getId());
         }else{
             Intent intent = new Intent(v.getContext(),LoginActivity.class);
             startActivity(intent);
@@ -76,10 +90,15 @@ public class FragmentProfile extends Fragment {
 
         contactGroupViewModel = ViewModelProviders.of(this, new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
 
+        groupListViewModel = ViewModelProviders.of(this,new GroupListViewModel.Factory(getActivity().getApplicationContext())).get(GroupListViewModel.class);
 
         for(ContactGroup contactGroup :contactGroupViewModel.readGroupForSync()){
 
             contactGroupsForSync.add(new ContactGroup(contactGroup.getId(),contactGroup.getGroupname(),contactGroup.getNumofcontacts())) ;
+        }
+
+        for(Grouplist grouplist : groupListViewModel.getGroupListForSync()){
+            groupListForSync.add(new Grouplist(grouplist.getFirstName(),grouplist.getLastName(),grouplist.getMiddleName(),grouplist.getPhoneNumber(),grouplist.getGroupid()));
         }
 
         btnSync.setOnClickListener(new View.OnClickListener() {
@@ -94,11 +113,20 @@ public class FragmentProfile extends Fragment {
     private void synContacts() {
 
         for(ContactGroup contactGroup : contactGroupsForSync){
-                syncContactsbyClass(contactGroup);
+            //Toast.makeText(getContext(),apiGroupId+" is the group id",Toast.LENGTH_SHORT).show();
+            for(Grouplist grouplist : groupListViewModel.readGroupListById(contactGroup.getId())){
+                    groupListForSync.add(new Grouplist(grouplist.getFirstName(),grouplist.getLastName(),grouplist.getMiddleName(),grouplist.getPhoneNumber(),grouplist.getGroupid()));
+                }
+            syncContactsbyClass(contactGroup,groupListForSync);
         }
+//        for (Grouplist grouplist : grouplistById){
+//            syncGrouplist(grouplist);
+//        }
     }
 
-    public void syncContactsbyClass(ContactGroup contactGroup){
+
+    public void syncContactsbyClass(ContactGroup contactGroup,List<Grouplist> groupListForSync2){
+        //Toast.makeText(getContext(),contactGroup.getGroupname(),Toast.LENGTH_SHORT).show();
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_CREATECONTACTGROUP,
@@ -112,23 +140,28 @@ public class FragmentProfile extends Fragment {
                             JSONObject obj = new JSONObject(response);
                             //if no error in response
                             if (!obj.getBoolean("error")) {
-                                Toast.makeText(getContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
 
                                 //getting the user from the response
                                 JSONObject userJson = obj.getJSONObject("user");
 
+                                apiGroupId = userJson.getInt("id");
                                 //creating a new user object
 
-                                ContactGroup contactGroup = new ContactGroup(
-//                                        'id'=>$id,
-//                                'groupname'=>$groupname,
-//                                        'numofcontacts'=>$numofcontacts,
-//                                        'userid'=>$userid
-                                        userJson.getInt("id"),
+                                volleycontactGroup = new VolleyContactGroup(
+////                                        'id'=>$id,
+////                                'groupname'=>$groupname,
+////                                        'numofcontacts'=>$numofcontacts,
+////                                        'userid'=>$userid
+                                      userJson.getInt("id"),
                                         userJson.getString("groupname"),
-                                        userJson.getString("numofcontacts")
+                                        userJson.getString("numofcontacts"),
+                                        userJson.getInt("userid")
                                 );
-                                Toast.makeText(getContext(), contactGroup.getGroupname(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), obj.getString("message") + "ID: " + volleycontactGroup.getId(), Toast.LENGTH_SHORT).show();
+                                for(Grouplist grouplist: groupListForSync2){
+                                    syncGrouplist(grouplist,volleycontactGroup.getId());
+                                }
+//                                Toast.makeText(getContext(), contactGroup.getGroupname(), Toast.LENGTH_SHORT).show();
 
 
 //                                //storing the user in shared preferences
@@ -169,6 +202,81 @@ public class FragmentProfile extends Fragment {
         };
         VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
 
+
+    }
+
+
+    private void syncGrouplist(Grouplist grouplist,int id){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_CREATEGROUPLIST,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            Log.i("response",response);
+                            //converting response to json object
+                            JSONObject obj = new JSONObject(response);
+                            //if no error in response
+                            if (!obj.getBoolean("error")) {
+                                Toast.makeText(getContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                //getting the user from the response
+                                JSONObject userJson = obj.getJSONObject("user");
+
+                                //apiGroupId = userJson.getInt("id");
+                                //creating a new user object
+
+//                                ContactGroup contactGroup = new ContactGroup(
+////                                        'id'=>$id,
+////                                'groupname'=>$groupname,
+////                                        'numofcontacts'=>$numofcontacts,
+////                                        'userid'=>$userid
+//                                        userJson.getInt("id"),
+//                                        userJson.getString("groupname"),
+//                                        userJson.getString("numofcontacts")
+//                                );
+//                                Toast.makeText(getContext(), contactGroup.getGroupname(), Toast.LENGTH_SHORT).show();
+
+
+//                                //storing the user in shared preferences
+//                                SharedPreferenceManager.getInstance(getContext()).userLogin(user);
+//
+//                                //start the main activity
+//                                Intent mainActivityIntent = new Intent(getContext(), MainActivity.class);
+//                                startActivity(mainActivityIntent);
+
+
+                            } else {
+                                Toast.makeText(getContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String,String> getParams()throws AuthFailureError {
+
+                //'firstname','lastname','phonenumber','groupid','middlename'
+                Map<String,String> params = new HashMap<>();
+                params.put("firstname",grouplist.getFirstName());
+                params.put("lastname",grouplist.getLastName());
+                params.put("phonenumber",grouplist.getPhoneNumber());
+                params.put("groupid",id+"");
+                params.put("middlename",grouplist.getMiddleName());
+                //'id','groupname','numofcontacts','userid'
+
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
 
     }
 

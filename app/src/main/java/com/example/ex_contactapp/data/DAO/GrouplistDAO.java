@@ -5,12 +5,16 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.ex_contactapp.data.Entities.ContactGroup;
 import com.example.ex_contactapp.data.Entities.Grouplist;
 
 import java.util.List;
 
 @Dao
 public interface GrouplistDAO {
+
+    @Query("SELECT * FROM grouplist ORDER BY 'id' DESC")
+    List<Grouplist> getGroupListForSync();
 
     @Query("SELECT * FROM grouplist WHERE grouplist.groupid=:id")
     List<Grouplist> getGroupContactsById(int id);
