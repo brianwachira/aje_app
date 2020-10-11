@@ -30,13 +30,18 @@ public class GroupListRepository {
     }
 
 
-    public void insertGroupList(String firstname,String lastname, String middlename,String phonenumber,Integer groupId){
-        Grouplist grouplist = new Grouplist(firstname,lastname,middlename,phonenumber,groupId);
+    public void insertGroupList(String firstname,String lastname, String middlename,String phonenumber,Integer groupId,Integer remoteid){
+        Grouplist grouplist = new Grouplist(firstname,lastname,middlename,phonenumber,groupId,remoteid);
         grouplistDAO.insertGroupList(grouplist);
 
     }
 
     public void deleteContact(int id) {
         grouplistDAO.deleteGroupContact(id);
+    }
+
+
+    public  void updateGroupListRemoteID(int remoteid, int groupid){
+        grouplistDAO.updateGroupList(remoteid,groupid);
     }
 }

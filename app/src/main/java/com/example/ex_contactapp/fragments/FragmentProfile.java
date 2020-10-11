@@ -58,6 +58,7 @@ public class FragmentProfile extends Fragment {
 
     Button btnSync;
     List<Grouplist> grouplistById;
+    List<Grouplist> grouplistWithRemote;
     List<ContactGroup> contactGroupsForSync;
     List<Grouplist> groupListForSync;
     User user;
@@ -78,6 +79,7 @@ public class FragmentProfile extends Fragment {
         contactGroupsForSync = new ArrayList<>();
         groupListForSync = new ArrayList<>();
         grouplistById = new ArrayList<>();
+        grouplistWithRemote = new ArrayList<>();
         if(SharedPreferenceManager.getInstance(getContext()).isLoggedIn()){
             user = SharedPreferenceManager.getInstance(getContext()).getUser();
 
@@ -98,7 +100,7 @@ public class FragmentProfile extends Fragment {
         }
 
         for(Grouplist grouplist : groupListViewModel.getGroupListForSync()){
-            groupListForSync.add(new Grouplist(grouplist.getFirstName(),grouplist.getLastName(),grouplist.getMiddleName(),grouplist.getPhoneNumber(),grouplist.getGroupid()));
+            groupListForSync.add(new Grouplist(grouplist.getFirstName(),grouplist.getLastName(),grouplist.getMiddleName(),grouplist.getPhoneNumber(),grouplist.getGroupid(),grouplist.getRemotegroupid()));
         }
 
         btnSync.setOnClickListener(new View.OnClickListener() {
@@ -113,19 +115,34 @@ public class FragmentProfile extends Fragment {
     private void synContacts() {
 
         for(ContactGroup contactGroup : contactGroupsForSync){
+
+//            for(Grouplist grouplist : groupListViewModel.readGroupListById(contactGroup.getId())){
+//                    groupListForSync.add(new Grouplist(grouplist.getFirstName(),grouplist.getLastName(),grouplist.getMiddleName(),grouplist.getPhoneNumber(),grouplist.getGroupid(),grouplist.getRemotegroupid()));
+//                }
+            syncContactsbyClass(contactGroup);
+
+
+            //for(Grouplist grouplist : groupListForSync){
+                //syncGrouplist(grouplist,apiGroupId);
+                //grouplistWithRemote.add(new Grouplist(grouplist.getFirstName(),grouplist.getLastName(),grouplist.getMiddleName(),grouplist.getPhoneNumber(),grouplist.getGroupid(),apiGroupId));
+            //}
             //Toast.makeText(getContext(),apiGroupId+" is the group id",Toast.LENGTH_SHORT).show();
-            for(Grouplist grouplist : groupListViewModel.readGroupListById(contactGroup.getId())){
-                    groupListForSync.add(new Grouplist(grouplist.getFirstName(),grouplist.getLastName(),grouplist.getMiddleName(),grouplist.getPhoneNumber(),grouplist.getGroupid()));
-                }
-            syncContactsbyClass(contactGroup,groupListForSync);
+
+
+//            for(Grouplist grouplist: grouplistWithRemote){
+//                syncGrouplist(grouplist,apiGroupId);
+//            }
         }
-//        for (Grouplist grouplist : grouplistById){
-//            syncGrouplist(grouplist);
-//        }
+
+        for(Grouplist grouplist : groupListViewModel.getGroupListForSync()){
+            //Toast.makeText(getContext(),grouplist.getRemotegroupid()+" ",Toast.LENGTH_SHORT).show();
+            syncGrouplist(grouplist);
+        }
+
     }
 
 
-    public void syncContactsbyClass(ContactGroup contactGroup,List<Grouplist> groupListForSync2){
+    public void syncContactsbyClass(ContactGroup contactGroup){
         //Toast.makeText(getContext(),contactGroup.getGroupname(),Toast.LENGTH_SHORT).show();
 
 
@@ -157,10 +174,10 @@ public class FragmentProfile extends Fragment {
                                         userJson.getString("numofcontacts"),
                                         userJson.getInt("userid")
                                 );
+
+                                groupListViewModel.updateGrouplistRemoteid(userJson.getInt("id"),contactGroup.getId());
                                 Toast.makeText(getContext(), obj.getString("message") + "ID: " + volleycontactGroup.getId(), Toast.LENGTH_SHORT).show();
-                                for(Grouplist grouplist: groupListForSync2){
-                                    syncGrouplist(grouplist,volleycontactGroup.getId());
-                                }
+
 //                                Toast.makeText(getContext(), contactGroup.getGroupname(), Toast.LENGTH_SHORT).show();
 
 
@@ -202,11 +219,11 @@ public class FragmentProfile extends Fragment {
         };
         VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
 
-
     }
 
 
-    private void syncGrouplist(Grouplist grouplist,int id){
+
+    private void syncGrouplist(Grouplist grouplist){
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_CREATEGROUPLIST,
                 new Response.Listener<String>() {
                     @Override
@@ -215,13 +232,13 @@ public class FragmentProfile extends Fragment {
                         try {
                             Log.i("response",response);
                             //converting response to json object
-                            JSONObject obj = new JSONObject(response);
+                            JSONObject obj2 = new JSONObject(response);
                             //if no error in response
-                            if (!obj.getBoolean("error")) {
-                                Toast.makeText(getContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            if (!obj2.getBoolean("error")) {
+                                Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
 
                                 //getting the user from the response
-                                JSONObject userJson = obj.getJSONObject("user");
+                                JSONObject userJson = obj2.getJSONObject("user");
 
                                 //apiGroupId = userJson.getInt("id");
                                 //creating a new user object
@@ -247,7 +264,7 @@ public class FragmentProfile extends Fragment {
 
 
                             } else {
-                                Toast.makeText(getContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -269,7 +286,7 @@ public class FragmentProfile extends Fragment {
                 params.put("firstname",grouplist.getFirstName());
                 params.put("lastname",grouplist.getLastName());
                 params.put("phonenumber",grouplist.getPhoneNumber());
-                params.put("groupid",id+"");
+                params.put("groupid",grouplist.getRemotegroupid()+"");
                 params.put("middlename",grouplist.getMiddleName());
                 //'id','groupname','numofcontacts','userid'
 

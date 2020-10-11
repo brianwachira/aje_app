@@ -16,12 +16,16 @@ public class GroupListViewModel extends ViewModel {
         this.groupListRepository = GroupListRepository.getInstance(ContactGroupDatabase.getAppDatabase(context).grouplistDAO());
     }
 
-    public void createGroupList(String firstname, String lastname, String middlename, String phonenumber, Integer groupId) {
-        this.groupListRepository.insertGroupList(firstname, lastname, middlename, phonenumber, groupId);
+    public void createGroupList(String firstname, String lastname, String middlename, String phonenumber, Integer groupId, Integer remotegroupId) {
+        this.groupListRepository.insertGroupList(firstname, lastname, middlename, phonenumber, groupId,remotegroupId);
     }
 
     public void deleteContactFromGroup(int id) {
         this.groupListRepository.deleteContact(id);
+    }
+
+    public void updateGrouplistRemoteid(int remoteid, int groupId){
+        this.groupListRepository.updateGroupListRemoteID(remoteid,groupId);
     }
 
     public List<Grouplist> getGroupListForSync(){

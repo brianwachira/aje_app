@@ -22,8 +22,8 @@ public interface GrouplistDAO {
     @Insert
     void insertGroupList(Grouplist grouplist);
 
-    @Update
-    void updateGroupList(Grouplist grouplist);
+    @Query("UPDATE grouplist SET remotegroupid=:remoteid WHERE grouplist.groupid=:groupid")
+    void updateGroupList(int remoteid,int groupid);
 
     @Query("DELETE FROM grouplist WHERE grouplist.contactid=:id")
     void deleteGroupContact(int id);
