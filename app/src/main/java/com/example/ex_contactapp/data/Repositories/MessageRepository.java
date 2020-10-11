@@ -24,8 +24,8 @@ public class MessageRepository {
         return instance;
     }
 
-    public void insertMessage(String messageContent, int groupId) {
-        messageDAO.insertMessage(new Message(messageContent, groupId));
+    public void insertMessage(String messageContent, int groupId, int remotegroupId) {
+        messageDAO.insertMessage(new Message(messageContent, groupId,remotegroupId));
     }
 
     public void deleteMessage(int messageId){
@@ -39,6 +39,14 @@ public class MessageRepository {
 
     public LiveData<Message> getMessagesById(int id) {
         return messageDAO.getMessagesById(id);
+    }
+
+    public void updateRemoteId(int remoteid, int groupid){
+        messageDAO.updateMessage(remoteid,groupid);
+    }
+
+    public List<Message> returnMessagesForSync(){
+        return messageDAO.getMessagesForSync();
     }
 
 }

@@ -345,7 +345,7 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
             }
             //Log.i("Message : ",modelMessages.getMessage());
             //Log.i("Message_ID : ",modelMessages.getGroupId() + " ");
-            messageViewModel.createMessage(modelMessages.getMessage(),modelMessages.getGroupId());
+            messageViewModel.createMessage(modelMessages.getMessage(),modelMessages.getGroupId(),0);
             return null;
         }
 

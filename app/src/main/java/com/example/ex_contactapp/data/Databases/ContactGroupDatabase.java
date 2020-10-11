@@ -13,7 +13,7 @@ import com.example.ex_contactapp.data.Entities.ContactGroup;
 import com.example.ex_contactapp.data.Entities.Grouplist;
 import com.example.ex_contactapp.data.Entities.Message;
 
-@Database(entities = {ContactGroup.class, Grouplist.class, Message.class}, version = 2)
+@Database(entities = {ContactGroup.class, Grouplist.class, Message.class}, version = 3)
 public abstract class ContactGroupDatabase extends RoomDatabase {
 
     public abstract ContactGroupDao contactGroupDao();

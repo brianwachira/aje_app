@@ -20,8 +20,8 @@ public class MessageViewModel extends ViewModel {
         messageRepository = MessageRepository.getInstance(ContactGroupDatabase.getAppDatabase(context).messageDAO());
     }
 
-    public void createMessage(String messageContent, int groupId){
-        messageRepository.insertMessage(messageContent,groupId);
+    public void createMessage(String messageContent, int groupId,int remotegroupId){
+        messageRepository.insertMessage(messageContent,groupId,remotegroupId);
     }
 
     public  void deleteMessage(int messageId){
@@ -33,6 +33,12 @@ public class MessageViewModel extends ViewModel {
     }
     public LiveData<Message>readMessageById(Integer id){
         return messageRepository.getMessagesById(id);
+    }
+    public void updateRemoteId(int remoteid, int groupid){
+        messageRepository.updateRemoteId(remoteid,groupid);
+    }
+    public List<Message> getMessageForSync(){
+       return messageRepository.returnMessagesForSync();
     }
     public static class Factory implements ViewModelProvider.Factory{
         private final Context context;

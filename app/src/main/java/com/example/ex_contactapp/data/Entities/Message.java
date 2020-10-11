@@ -27,6 +27,7 @@ public class Message {
     @NonNull
     private String messageContent;
 
+
     public Message(){}
 
     /**
@@ -34,9 +35,10 @@ public class Message {
      */
 
     @Ignore
-    public Message(@NonNull String messageContent,Integer groupid) {
+    public Message(@NonNull String messageContent,Integer groupid,Integer remotegroupid) {
         this.messageContent = messageContent;
         this.groupid = groupid;
+        this.remotegroupid = remotegroupid;
     }
 
 
@@ -48,6 +50,15 @@ public class Message {
     )
     private Integer groupid;
 
+    public Integer getRemotegroupid() {
+        return remotegroupid;
+    }
+
+    public void setRemotegroupid(Integer remotegroupid) {
+        this.remotegroupid = remotegroupid;
+    }
+
+    private Integer remotegroupid;
 
     public Integer getMessageid() {
         return messageid;

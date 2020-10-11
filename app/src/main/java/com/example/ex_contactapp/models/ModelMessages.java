@@ -38,4 +38,6 @@ public class ModelMessages {
     public void setMessage(String message2) {
         this.message = message2;
     }
+
+
 }
