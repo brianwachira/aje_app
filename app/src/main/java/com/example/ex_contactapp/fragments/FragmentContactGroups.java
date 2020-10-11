@@ -62,6 +62,7 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
          contactGroupViewModel.readGroup().observe(this,contactGroups ->
                 //contactGroup = contactGroups);
 
+
                  setAdapter(new ContactGroupsRvAdapter(getContext(),contactGroups,this))
          );
 
@@ -85,8 +86,8 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
         adapter.notifyDataSetChanged();
     }
     @Override
-    public void onRecyclerViewTapped(String groupName, List<String> contactIdList) {
-        showDialog(groupName,contactIdList);
+    public void onRecyclerViewTapped(int id) {
+        showDialog( id);
     }
 
     @Override
@@ -110,9 +111,9 @@ public class FragmentContactGroups extends Fragment implements ContactGroupsRvAd
 
     }
 
-    private void showDialog(String groupName, List<String> contactIdList){
+    private void showDialog(int id){
         FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-        FragmentDialogContacts fragmentDialogContacts = FragmentDialogContacts.newInstance(groupName,contactIdList);
+        FragmentDialogContacts fragmentDialogContacts = FragmentDialogContacts.newInstance(id);
         fragmentDialogContacts.setTargetFragment(this,0);
         fragmentDialogContacts.show(fm,"contact-group-list");
     }

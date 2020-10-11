@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ex_contactapp.data.Databases.ContactGroupDatabase;
 import com.example.ex_contactapp.data.Entities.ContactGroup;
+import com.example.ex_contactapp.data.Relations.ContactGroupAndGroupList;
 import com.example.ex_contactapp.data.Repositories.ContactGroupRepository;
 
 import java.util.List;
@@ -34,6 +35,19 @@ public class ContactGroupViewModel extends ViewModel {
     public LiveData<List<ContactGroup>> readGroup(){
 
         return contactGroupRepository.ReadContactGroups();
+    }
+
+    //getcontact group for sync
+    public List<ContactGroup> readGroupForSync(){
+        return contactGroupRepository.ReadContactGroupsForSync();
+    }
+
+    public  Integer readGroupId(String name){
+        return contactGroupRepository.readGroupId(name);
+    }
+
+    public LiveData<ContactGroupAndGroupList>readGroupAndContacts(Integer id){
+        return contactGroupRepository.readContactGroupAndContactsById(id);
     }
 
     public static class Factory implements ViewModelProvider.Factory{

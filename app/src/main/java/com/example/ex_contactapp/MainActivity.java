@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -12,15 +13,18 @@ import com.example.ex_contactapp.adapters.ViewPagerAdapter;
 import com.example.ex_contactapp.fragments.FragmentCalls;
 import com.example.ex_contactapp.fragments.FragmentContactGroups;
 import com.example.ex_contactapp.fragments.FragmentContacts;
-import com.example.ex_contactapp.fragments.FragmentFav;
+import com.example.ex_contactapp.fragments.FragmentMessage;
+import com.example.ex_contactapp.fragments.FragmentMessageReport;
+import com.example.ex_contactapp.fragments.FragmentProfile;
 import com.google.android.material.tabs.TabLayout;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private final int[] ICONS = {R.drawable.ic_call,R.drawable.ic_contacts,R.drawable.ic_star,R.drawable.ic_group};
+    private final int[] ICONS = {R.drawable.ic_contacts,R.drawable.ic_message,R.drawable.ic_group,R.drawable.ic_message_report,R.drawable.ic_person};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +38,12 @@ public class MainActivity extends AppCompatActivity {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        adapter.addFragment(new FragmentCalls(),"Calls");
+        //adapter.addFragment(new FragmentCalls(),"Calls");
         adapter.addFragment(new FragmentContacts(),"Contacts");
-        adapter.addFragment(new FragmentFav(),"Fav");
+        adapter.addFragment(new FragmentMessage(),"Message");
         adapter.addFragment(new FragmentContactGroups(),"Groups");
+        adapter.addFragment(new FragmentMessageReport(),"Message Report");
+        adapter.addFragment(new FragmentProfile(),"Profile");
 
 
         viewPager.setAdapter(adapter);
@@ -50,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
             TabLayout.Tab tab = tabLayout.getTabAt(count);
             tab.setIcon(ICONS[count]);
         }
+
+//        Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+//        startActivity(loginIntent);
+//        finish();
     }
     private void askPermissions(){
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)

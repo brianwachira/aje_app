@@ -31,7 +31,7 @@ public class Grouplist {
     @NonNull
     private Integer groupid;
 
-
+    private int remotegroupid;
     public Grouplist(){
 
     }
@@ -41,15 +41,17 @@ public class Grouplist {
      * @param firstName
      * @param phoneNumber
      * @param middleName
+     * @param remotegroupid
      */
 
 
-    public Grouplist(String firstName, String lastName, String middleName, @NonNull String phoneNumber,@NonNull int groupid) {
+    public Grouplist(String firstName, String lastName, String middleName, @NonNull String phoneNumber,@NonNull int groupid,int remotegroupid) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
         this.phoneNumber = phoneNumber;
         this.groupid = groupid;
+        this.remotegroupid = remotegroupid;
     }
 
     @ForeignKey(
@@ -108,6 +110,16 @@ public class Grouplist {
 
     public void setGroupid(Integer groupid) {
         this.groupid = groupid;
+    }
+
+
+
+    public int getRemotegroupid() {
+        return remotegroupid;
+    }
+
+    public void setRemotegroupid(int remotegroupid) {
+        this.remotegroupid = remotegroupid;
     }
 
 }

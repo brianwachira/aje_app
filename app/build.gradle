@@ -21,6 +21,7 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+
 }
 
 dependencies {
@@ -31,7 +32,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.2.1'
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
 
@@ -39,4 +40,13 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
 
+    //social login
+    implementation 'com.github.KosyanMedia.android-sociallogin:sociallogin:1.1.0'
+    implementation 'com.github.KosyanMedia.android-sociallogin:facebook:1.1.0'
+    implementation 'com.github.KosyanMedia.android-sociallogin:google:1.1.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+
+    //volley
+    implementation 'com.android.volley:volley:1.1.0'
 }
+

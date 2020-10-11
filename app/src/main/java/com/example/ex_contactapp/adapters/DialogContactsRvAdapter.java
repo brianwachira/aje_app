@@ -4,88 +4,97 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.ex_contactapp.R;
-import com.example.ex_contactapp.models.ModelDialogContacts;
-
+import com.example.ex_contactapp.data.Entities.Grouplist;
 import java.util.List;
 
 public class DialogContactsRvAdapter extends RecyclerView.Adapter<DialogContactsRvAdapter.ViewHolder> {
-
-    private  Context mdialogContext;
+    private Context mdialogContext;
     private LayoutInflater inflater;
-    private List<ModelDialogContacts> mdialogContacts;
-    private DialogCheckedStatusListener mdialogCheckedStatusListener;
+    private List<Grouplist> groupList;
+    private DialogItemListener mdialogItemListener;
 
-    public interface DialogCheckedStatusListener{
-        void onItemChecked(String contactId);
-        void onItemUnchecked(String contactId);
 
+    public interface DialogItemListener{
+        void onItemDeleteListener(Integer num);
     }
 
-    public DialogContactsRvAdapter(Context context, List<ModelDialogContacts> listDialogContacts,DialogCheckedStatusListener dialogCheckedStatusListener){
-        mdialogContacts = listDialogContacts;
+    public DialogContactsRvAdapter(Context context, List<Grouplist> mgrouplist, DialogItemListener dialogItemListener) {
         mdialogContext = context;
-        mdialogCheckedStatusListener = dialogCheckedStatusListener;
-
+        groupList = mgrouplist;
+        mdialogItemListener = dialogItemListener;
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         inflater = LayoutInflater.from(mdialogContext);
+
         View view = inflater.inflate(R.layout.items_dialog_contacts,parent,false);
+
         ViewHolder viewHolder = new ViewHolder(view);
+
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull  DialogContactsRvAdapter.ViewHolder holder, int position) {
 
         final TextView dialog_contact_name,dialog_contact_number;
-        final CheckBox dialog_contact_checkbox;
+        final Button dialogContactDelete;
 
         dialog_contact_name = holder.dialogContact_name;
         dialog_contact_number = holder.dialogContact_number;
+        dialogContactDelete = holder.dialogContactDelete;
 
-        dialog_contact_checkbox = holder.dialogContactSelectedCheckBox;
+        //holder.dialogContact_name.setText("wasgood");
+        dialog_contact_name.setText(groupList.get(position).getFirstName() + " " + groupList.get(position).getMiddleName() + " " + groupList.get(position).getLastName());
+        dialog_contact_number.setText(groupList.get(position).getPhoneNumber());
 
-        dialog_contact_name.setText(mdialogContacts.get(position).getName());
-        dialog_contact_number.setText(mdialogContacts.get(position).getNumber());
-
-        dialog_contact_checkbox.setOnClickListener(v -> {
-            if(dialog_contact_checkbox.isChecked()){
-                mdialogCheckedStatusListener.onItemChecked(mdialogContacts.get(position).getId());
-            }else{
-                mdialogCheckedStatusListener.onItemUnchecked(mdialogContacts.get(position).getId());
-            }
-        });
+        //dialogContactDelete.setOnClickListener((View.OnClickListener) mdialogContext.getApplicationContext());
+        holder.bind(this.groupList.get(position).getContactid(), mdialogItemListener);
 
     }
 
-    @Override
+//    @Override
+//    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+//        TextView dialog_contact_name = holder.dialogContact_name;
+//        TextView dialog_contact_number = holder.dialogContact_number;
+//        Button dialogContactDelete = holder.dialogContactDelete;
+//        dialog_contact_name.setText(this.groupList.get(position).getFirstName() + " " + this.groupList.get(position).getMiddleName() + " " + this.groupList.get(position).getLastName());
+//        dialog_contact_number.setText(this.groupList.get(position).getPhoneNumber());
+//        dialogContactDelete.setOnClickListener((View.OnClickListener) this);
+//        holder.bind(this.groupList.get(position).getContactid(), this.mdialogItemListener);
+//    }
+
+    static /* synthetic */ void lambda$onBindViewHolder$0(View v) {
+    }
+
     public int getItemCount() {
-        return mdialogContacts.size();
+        return this.groupList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        Button dialogContactDelete;
+        TextView dialogContact_name;
+        TextView dialogContact_number;
 
-        TextView dialogContact_name,dialogContact_number;
-        CheckBox dialogContactSelectedCheckBox;
-
-        public  ViewHolder(View itemView){
+        public ViewHolder(View itemView) {
             super(itemView);
-
-            dialogContact_name = itemView.findViewById(R.id.dialog_contact_name);
+            dialogContact_name =  itemView.findViewById(R.id.dialog_contact_name);
             dialogContact_number = itemView.findViewById(R.id.dialog_contact_number);
-            dialogContactSelectedCheckBox = itemView.findViewById(R.id.dialog_contact_checkbox);
+            dialogContactDelete =  itemView.findViewById(R.id.dialog_contact_delete);
+        }
+
+        public void bind(final Integer contactid, final DialogItemListener mdialogItemListener) {
+            dialogContactDelete.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    mdialogItemListener.onItemDeleteListener(contactid);
+                }
+            });
         }
     }
-
 }

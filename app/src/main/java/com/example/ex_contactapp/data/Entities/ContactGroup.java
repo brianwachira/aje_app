@@ -38,7 +38,7 @@ public class ContactGroup {
 
 
     public String getGroupname() {
-        return groupname;
+        return this.groupname;
     }
 
     public void setGroupname(String groupname) {
@@ -85,5 +85,9 @@ public ContactGroup(String groupname,String numofcontacts,List<Grouplist> groupl
     this.grouplist = grouplist;
 
 }
+
+    public String toString() {
+        return this.groupname;
+    }
 
 }
