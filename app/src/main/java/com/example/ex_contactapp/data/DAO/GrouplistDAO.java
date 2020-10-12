@@ -30,4 +30,7 @@ public interface GrouplistDAO {
 
     @Query("DELETE  FROM grouplist WHERE grouplist.groupid=:id")
     void deleteAllGroupContacts(int id);
+
+    @Query("SELECT phoneNumber FROM grouplist WHERE grouplist.phoneNumber = :phonenumber AND grouplist.groupid = :groupid")
+    String getGroupPhoneNumber(String phonenumber,int groupid);
 }

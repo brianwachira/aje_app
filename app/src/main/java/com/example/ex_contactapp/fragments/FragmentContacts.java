@@ -256,7 +256,11 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
     public void insertGrouplist(int groupId){
 
         currentSelectedContacts.forEach((currentSelectedContact)->{
-        groupListViewModel.createGroupList(currentSelectedContact.getFirstName(),currentSelectedContact.getLastName(),"null",currentSelectedContact.getPhoneNumber(),groupId,0);
+            boolean doesContactExist = groupListViewModel.doesContactExist(currentSelectedContact.getPhoneNumber(),groupId);
+            if(doesContactExist != true){
+                groupListViewModel.createGroupList(currentSelectedContact.getFirstName(),currentSelectedContact.getLastName(),"null",currentSelectedContact.getPhoneNumber(),groupId,0);
+
+            }
         });
 
         clearFields();

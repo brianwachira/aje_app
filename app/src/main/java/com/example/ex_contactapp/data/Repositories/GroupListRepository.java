@@ -45,4 +45,8 @@ public class GroupListRepository {
         grouplistDAO.updateGroupList(remoteid,groupid);
     }
 
+    public String getGroupByPhoneNumber(String phonenumber,int groupid){
+        return  grouplistDAO.getGroupPhoneNumber(phonenumber,groupid);
+    }
+
 }

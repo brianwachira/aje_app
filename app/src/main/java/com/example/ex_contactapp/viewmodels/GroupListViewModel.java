@@ -9,6 +9,8 @@ import com.example.ex_contactapp.data.Repositories.GroupListRepository;
 
 import java.util.List;
 
+import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
+
 public class GroupListViewModel extends ViewModel {
     private GroupListRepository groupListRepository;
 
@@ -35,6 +37,19 @@ public class GroupListViewModel extends ViewModel {
     public List<Grouplist>readGroupListById(int id){
 
         return this.groupListRepository.readGroupListById(id);
+    }
+
+    public boolean doesContactExist(String PhoneNumber,int groupid){
+        boolean doesContactExist ;
+        String result = groupListRepository.getGroupByPhoneNumber(PhoneNumber,groupid);
+
+        if(result!=null){
+            doesContactExist = true;
+        }else{
+            doesContactExist = false;
+        }
+
+        return  doesContactExist;
     }
 
     public static class Factory implements ViewModelProvider.Factory {
