@@ -60,11 +60,14 @@ public class FragmentProfile extends Fragment {
     MessageViewModel messageViewModel;
 
     Button btnSync;
+    Button btnRestore;
     List<Grouplist> grouplistById;
     List<Grouplist> grouplistWithRemote;
     List<ContactGroup> contactGroupsForSync;
     List<Grouplist> groupListForSync;
     List<Message> messageList;
+
+    List <ContactGroup> restoredContactGroup;
     User user;
     int apiGroupId;
 
@@ -85,6 +88,10 @@ public class FragmentProfile extends Fragment {
         grouplistById = new ArrayList<>();
         grouplistWithRemote = new ArrayList<>();
         messageList = new ArrayList<>();
+
+        restoredContactGroup = new ArrayList<>();
+        
+        btnRestore = v.findViewById(R.id.buttonRestore);
         if(SharedPreferenceManager.getInstance(getContext()).isLoggedIn()){
             user = SharedPreferenceManager.getInstance(getContext()).getUser();
 
@@ -117,7 +124,65 @@ public class FragmentProfile extends Fragment {
                synContacts();
             }
         });
+        
+        btnRestore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restoreContacts();
+            }
+        });
         return v;
+    }
+
+    private void restoreContacts() {
+        restoreContactGroup();
+    }
+
+    private void restoreContactGroup() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_GETALLCONTACTGROUPS,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        Log.i("response",response);
+                        //converting response to json object
+                        JSONObject obj2 = new JSONObject(response);
+                        //if no error in response
+                        if (!obj2.getBoolean("error")) {
+                            Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            //getting the user from the response
+                            //JSONObject userJson = obj2.getJSONObject("user");
+                        } else {
+                            Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            })
+    {
+        @Override
+        protected Map<String,String> getParams()throws AuthFailureError {
+
+            //''messagecontent','groupid'
+            Map<String,String> params = new HashMap<>();
+            params.put("userid",user.getId()+"");
+
+            return params;
+        }
+
+    };
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+
+
     }
 
     private void synContacts() {

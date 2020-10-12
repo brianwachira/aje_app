@@ -24,6 +24,16 @@ public class ContactGroup {
 
     @NonNull
     private String numofcontacts;
+    private Integer remoteId;
+
+    public Integer getRemoteId() {
+        return remoteId;
+    }
+
+    public void setRemoteId(Integer remoteId) {
+        this.remoteId = remoteId;
+    }
+
 
 
 
