@@ -49,5 +49,8 @@ public class ContactGroupRepository {
     public LiveData<ContactGroupAndGroupList> readContactGroupAndContactsById(int id){
         return contactGroupDao.getContactGroupAndContactsById(id);
     }
+    public String getContactGroupByName(String name){
+        return  contactGroupDao.getContactGroupByName(name);
+    }
 
 }

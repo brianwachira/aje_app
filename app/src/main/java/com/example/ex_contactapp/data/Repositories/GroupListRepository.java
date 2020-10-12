@@ -44,4 +44,5 @@ public class GroupListRepository {
     public  void updateGroupListRemoteID(int remoteid, int groupid){
         grouplistDAO.updateGroupList(remoteid,groupid);
     }
+
 }

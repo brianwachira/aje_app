@@ -47,4 +47,8 @@ public interface ContactGroupDao {
 
     @Query("DELETE FROM contactgroup WHERE contactgroup.id=:id")
     void deleteContactGroup(int id);
+
+    @Query("SELECT groupname FROM contactgroup WHERE contactgroup.groupname=:name")
+    String getContactGroupByName(String name);
+
 }

@@ -50,6 +50,18 @@ public class ContactGroupViewModel extends ViewModel {
         return contactGroupRepository.readContactGroupAndContactsById(id);
     }
 
+    public boolean getContactGroupByName(String name){
+        boolean contactGroupExists;
+        String resultFromDB =contactGroupRepository.getContactGroupByName(name);
+        if(resultFromDB!=null){
+                contactGroupExists = true;
+        }else{
+            contactGroupExists =false;
+        }
+
+        return contactGroupExists;
+    }
+
     public static class Factory implements ViewModelProvider.Factory{
         private final Context contxt;
 

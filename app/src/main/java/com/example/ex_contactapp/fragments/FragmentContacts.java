@@ -110,11 +110,16 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
                 Log.i("editTextGroupNamelength", String.valueOf(editTextGroupName.getText().toString().length()));
                 if (editTextGroupName.getText().toString().length() > 2) {
                     if(currentSelectedContacts.size() > 4){
-                        contactGroupViewModel.createGroup(editTextGroupName.getText().toString(),String.valueOf(currentSelectedContacts.size()));
-                        Integer groupId = contactGroupViewModel.readGroupId(editTextGroupName.getText().toString());
+                        boolean doesContactExist = contactGroupViewModel.getContactGroupByName(editTextGroupName.getText().toString());
+                        if(doesContactExist == true){
+                            Toast.makeText(getContext(),"Name already taken",Toast.LENGTH_SHORT).show();
+                            }else{
+                            contactGroupViewModel.createGroup(editTextGroupName.getText().toString(),String.valueOf(currentSelectedContacts.size()));
+                            Integer groupId = contactGroupViewModel.readGroupId(editTextGroupName.getText().toString());
 
-                        insertGrouplist(groupId);
-                        //clearFields();
+                            insertGrouplist(groupId);
+                            //clearFields();
+                        }
                     }else{
                         new AlertDialog.Builder(this.getActivity())
                                 .setIcon(R.drawable.ic_error)
@@ -213,7 +218,7 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
         modelContactsBuffer = new ModelContactsBuffer(firstName,lastName,phonenumber);
         currentSelectedContacts.add(modelContactsBuffer);
         //currentSelectedContacts.add(contactId);
-        Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
 
     }
 
