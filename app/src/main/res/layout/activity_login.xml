@@ -7,51 +7,45 @@
 
     <TextView
         android:id="@+id/info"
-        android:layout_width="150dp"
-        android:layout_height="59dp"
+        android:layout_width="216dp"
+        android:layout_height="129dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="160dp"
-        android:text="Click on button to login"
+        android:text="Want to save your stuff?
+        \nLogin With Google By \nTapping The Button Below"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/facebookButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="280dp"
-        android:src="@drawable/ic_icons8_facebook"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.227"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/info"
-        app:layout_constraintVertical_bias="1.0" />
 
-    <Button
+    <ImageButton
         android:id="@+id/googleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Google"
+        android:layout_marginTop="116dp"
+        android:src="@drawable/ic_icons8_google"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/facebookButton"
-        app:layout_constraintTop_toBottomOf="@+id/info" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/info"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/skipButton"
-        android:linksClickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
+        android:linksClickable="true"
         android:text="Skip"
-        android:textSize="30sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/googleButton" />
+        app:layout_constraintTop_toBottomOf="@+id/googleButton"
+        app:layout_constraintVertical_bias="0.721" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

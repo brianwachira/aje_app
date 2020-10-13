@@ -451,13 +451,10 @@ public class FragmentProfile extends Fragment {
 
     public void syncContactsbyClass(ContactGroup contactGroup){
         //Toast.makeText(getContext(),contactGroup.getGroupname(),Toast.LENGTH_SHORT).show();
-
-
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_CREATECONTACTGROUP,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         try {
                             Log.i("response",response);
                             //converting response to json object
@@ -468,25 +465,13 @@ public class FragmentProfile extends Fragment {
                                 //getting the user from the response
                                 JSONObject userJson = obj.getJSONObject("user");
 
+                                //Get the online group id inorder to
+                                //link all the other data items linked to the contact group
                                 apiGroupId = userJson.getInt("id");
-                                //creating a new user object
-
-
+                                //
                                 groupListViewModel.updateGrouplistRemoteid(userJson.getInt("id"),contactGroup.getId());
                                 messageViewModel.updateRemoteId(userJson.getInt("id"),contactGroup.getId());
                                 Toast.makeText(getContext(), obj.getString("message") + "ID: " + apiGroupId, Toast.LENGTH_SHORT).show();
-
-//                                Toast.makeText(getContext(), contactGroup.getGroupname(), Toast.LENGTH_SHORT).show();
-
-
-//                                //storing the user in shared preferences
-//                                SharedPreferenceManager.getInstance(getContext()).userLogin(user);
-//
-//                                //start the main activity
-//                                Intent mainActivityIntent = new Intent(getContext(), MainActivity.class);
-//                                startActivity(mainActivityIntent);
-
-
                             } else {
                                 Toast.makeText(getContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
                             }
@@ -505,7 +490,7 @@ public class FragmentProfile extends Fragment {
             @Override
             protected Map<String,String> getParams()throws AuthFailureError {
 
-
+                    //passing the contactgroup class properties
                     Map<String,String> params = new HashMap<>();
                     params.put("groupname",contactGroup.getGroupname());
                     params.put("numofcontacts",contactGroup.getNumofcontacts());

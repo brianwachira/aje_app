@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private TextView info;
     ImageButton facebookLoginButton;
-    Button googleButton;
+    ImageButton googleButton;
     TextView skipButton;
 
     private GoogleApiClient googleApiClient;
@@ -90,7 +90,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         info = findViewById(R.id.info);
 
-        facebookLoginButton = findViewById(R.id.facebookButton);
 
         googleButton = findViewById(R.id.googleButton);
 
@@ -98,7 +97,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         skipButton.setOnClickListener(this);
 
-        facebookLoginButton.setOnClickListener(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -135,15 +133,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
 
         switch (v.getId()){
-            case R.id.facebookButton:
-                ImageButton facebookLoginButton= findViewById(R.id.facebookButton);
-                    //List<String> permissions = Arrays.asList("public_profile");
-                    //SocialLogin.Factory.getInstance().loginTo(this,new FacebookNetwork(permissions),this);
-                    //SocialLogin.Factory.getInstance().loginTo(this,new GoogleNetwork(" 245224874175-8mqgc3lhi1q1mo59g5cj4uuro71dckc1.apps.googleusercontent.com "),this);
-
-                    Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                    startActivityForResult(intent,RC_SIGN_IN);
-                    break;
             case R.id.googleButton:
                     LoginActivity.this.signIn();
                     break;
@@ -236,18 +225,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             //if no error in response
                             if (!obj.getBoolean("error")) {
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-
                                 //getting the user from the response
                                 JSONObject userJson = obj.getJSONObject("user");
-
                                 //creating a new user object
-
                                 User user = new User(
                                         userJson.getInt("id"),
                                         userJson.getString("givenName"),
                                         userJson.getString("userId")
                                 );
-
                                 //storing the user in shared preferences
                                 SharedPreferenceManager.getInstance(getApplicationContext()).userLogin(user);
 

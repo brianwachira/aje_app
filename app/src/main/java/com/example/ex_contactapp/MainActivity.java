@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new FragmentProfile(),"Profile");
 
 
+
+
         viewPager.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 

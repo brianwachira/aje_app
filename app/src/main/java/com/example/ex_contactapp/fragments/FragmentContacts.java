@@ -92,15 +92,11 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_CONTACTS},1);
         }else {
-
             adapter = new ContactsRvAdapter(getContext(), getContacts(),this);
             recyclerView.setItemViewCacheSize(getContacts().size());
-
             recyclerView.setAdapter(adapter);
             //  adapter.notifyDataSetChanged();
-
         }
-
         sharedViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(SharedViewModel.class);
         contactGroupViewModel = ViewModelProviders.of(this, new ContactGroupViewModel.Factory(getActivity().getApplicationContext())).get(ContactGroupViewModel.class);
         groupListViewModel = ViewModelProviders.of(this,new GroupListViewModel.Factory(getActivity().getApplicationContext())).get(GroupListViewModel.class);
@@ -137,14 +133,6 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
                             .show();
 
                 }
-
-                //sharedViewModel.setGroupName(editTextGroupName.getText().toString());
-                //sharedViewModel.setCurrentSelectedContacts(currentSelectedContacts);
-
-                //clearFields();
-                //editTextGroupName.setText("");
-
-               // Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
             });
 
 
