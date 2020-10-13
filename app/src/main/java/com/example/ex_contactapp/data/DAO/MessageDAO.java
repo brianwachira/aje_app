@@ -33,4 +33,7 @@ public interface MessageDAO {
 
     @Query("DELETE FROM message WHERE message.messageid=:id")
     void deleteMessage(int id);
+
+    @Query("SELECT messageContent FROM message WHERE message.messageContent=:messageContent AND message.groupid=:groupid")
+    String showMessageByRemoteId(String messageContent,int groupid);
 }

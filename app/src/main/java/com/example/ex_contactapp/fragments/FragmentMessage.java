@@ -259,7 +259,11 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
 
         this.contactGroupAndGroupList.observe(this, contactGroupAndGroupLists -> {
 
+            try{
                 setContactDetailsNeeded(contactGroupAndGroupLists.getContactGroup(),contactGroupAndGroupLists.getGrouplist());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
 
         });
 

@@ -71,16 +71,18 @@ public class ContactGroup {
     private List<Grouplist> grouplist = null;
 
     @Ignore
-    public ContactGroup(String groupname,String numofcontacts){
+    public ContactGroup(String groupname,String numofcontacts, Integer remoteId){
         this.groupname = groupname;
         this.numofcontacts = numofcontacts;
+        this.remoteId = remoteId;
     }
 
     @Ignore
-public ContactGroup(Integer id,String groupname,String numofcontacts){
+public ContactGroup(Integer id,String groupname,String numofcontacts, Integer remoteId){
     this.id = id;
     this.groupname = groupname;
     this.numofcontacts = numofcontacts;
+    this.remoteId = remoteId;
 }
 /**
  * @param grouplist

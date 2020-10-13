@@ -114,7 +114,7 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
                         if(doesContactExist == true){
                             Toast.makeText(getContext(),"Name already taken",Toast.LENGTH_SHORT).show();
                             }else{
-                            contactGroupViewModel.createGroup(editTextGroupName.getText().toString(),String.valueOf(currentSelectedContacts.size()));
+                            contactGroupViewModel.createGroup(editTextGroupName.getText().toString(),String.valueOf(currentSelectedContacts.size()),0);
                             Integer groupId = contactGroupViewModel.readGroupId(editTextGroupName.getText().toString());
 
                             insertGrouplist(groupId);

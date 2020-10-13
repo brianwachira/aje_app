@@ -22,9 +22,9 @@ public class ContactGroupViewModel extends ViewModel {
         contactGroupRepository = ContactGroupRepository.getInstance(ContactGroupDatabase.getAppDatabase(context).contactGroupDao());
     }
 
-    public void createGroup(String groupname, String numofcontacts){
+    public void createGroup(String groupname, String numofcontacts, int remoteId){
 
-        contactGroupRepository.insertContactGroup(groupname,numofcontacts);
+        contactGroupRepository.insertContactGroup(groupname,numofcontacts,remoteId);
     }
 
     public void deleteGroup(int groupId){
@@ -60,6 +60,10 @@ public class ContactGroupViewModel extends ViewModel {
         }
 
         return contactGroupExists;
+    }
+
+    public Integer readGroupIdByRemoteId(int remoteId){
+        return contactGroupRepository.readGroupIdByRemoteId(remoteId);
     }
 
     public static class Factory implements ViewModelProvider.Factory{

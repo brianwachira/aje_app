@@ -26,6 +26,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.example.ex_contactapp.LoginActivity;
 import com.example.ex_contactapp.R;
+import com.example.ex_contactapp.adapters.ContactGroupsRvAdapter;
 import com.example.ex_contactapp.data.Entities.ContactGroup;
 import com.example.ex_contactapp.data.Entities.Grouplist;
 import com.example.ex_contactapp.data.Entities.Message;
@@ -40,6 +41,7 @@ import com.example.ex_contactapp.volley.VolleySingleton;
 import com.example.ex_contactapp.volley.VolleyContactGroup;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,8 +70,14 @@ public class FragmentProfile extends Fragment {
     List<Message> messageList;
 
     List <ContactGroup> restoredContactGroup;
+    List<Grouplist> restoredGroupList;
+    List<Message> restoredMessageList;
     User user;
     int apiGroupId;
+
+    JSONArray jsonArraycontactGroups;
+    JSONArray jsonArraygrouplist;
+    JSONArray jsonArraymessagelist;
 
     VolleyContactGroup volleycontactGroup;
 
@@ -90,7 +98,10 @@ public class FragmentProfile extends Fragment {
         messageList = new ArrayList<>();
 
         restoredContactGroup = new ArrayList<>();
-        
+        restoredGroupList = new ArrayList<>();
+        restoredMessageList = new ArrayList<>();
+
+        jsonArraycontactGroups = null;
         btnRestore = v.findViewById(R.id.buttonRestore);
         if(SharedPreferenceManager.getInstance(getContext()).isLoggedIn()){
             user = SharedPreferenceManager.getInstance(getContext()).getUser();
@@ -110,7 +121,7 @@ public class FragmentProfile extends Fragment {
 
         for(ContactGroup contactGroup :contactGroupViewModel.readGroupForSync()){
 
-            contactGroupsForSync.add(new ContactGroup(contactGroup.getId(),contactGroup.getGroupname(),contactGroup.getNumofcontacts())) ;
+            contactGroupsForSync.add(new ContactGroup(contactGroup.getId(),contactGroup.getGroupname(),contactGroup.getNumofcontacts(),contactGroup.getRemoteId())) ;
         }
 
         for(Grouplist grouplist : groupListViewModel.getGroupListForSync()){
@@ -135,7 +146,167 @@ public class FragmentProfile extends Fragment {
     }
 
     private void restoreContacts() {
+
+        //restore contactgroup
         restoreContactGroup();
+
+        contactGroupViewModel.readGroup().observe(this,contactGroups ->
+                //contactGroup = contactGroups);
+
+                restoreGroupListsToPush(contactGroups)
+        );
+
+    }
+
+    private void restoreGroupListsToPush(List<ContactGroup> contactGroups) {
+
+        //restore grouplist
+        for (ContactGroup contactGroup : contactGroups){
+
+            restoreGroupList(contactGroup.getRemoteId(),contactGroup.getId());
+        }
+
+        for(ContactGroup contactGroup: contactGroups){
+            restoreMessages(contactGroup.getRemoteId(),contactGroup.getId());
+        }
+
+    }
+
+    private void restoreMessages(Integer remoteId2, Integer id2) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_GETALLMESSAGES,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            Log.i("response",response);
+                            //converting response to json object
+                            JSONObject obj2 = new JSONObject(response);
+                            if (!obj2.getBoolean("error")) {
+                                //if no error in response
+
+                                jsonArraymessagelist = obj2.getJSONArray("messageList");
+
+                                //loop through all grouplist json
+
+                                for(int i = 0; i < jsonArraymessagelist.length(); i++){
+                                    JSONObject c = jsonArraymessagelist.getJSONObject(i);
+
+                                    restoredMessageList.add(new Message(c.getString("messagecontent"),id2,c.getInt("groupid")));
+
+                                }
+
+                                for (Message message : restoredMessageList){
+                                    boolean doesMessageExist = messageViewModel.doesMessageExist(message.getMessageContent(),message.getGroupid());
+                                    if(doesMessageExist == true){
+                                        Toast.makeText(getContext(), "Message exists", Toast.LENGTH_SHORT).show();
+
+                                   }else{
+                                        messageViewModel.createMessage(message.getMessageContent(),message.getGroupid(),message.getGroupid());
+                                    }
+                                }
+                                Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String,String> getParams()throws AuthFailureError {
+                //''messagecontent','groupid'
+                Map<String,String> params = new HashMap<>();
+                params.put("groupid",remoteId2+"");
+
+                return params;
+            }
+
+        };
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+    }
+
+
+    private void restoreGroupList(int remoteId1,int id1) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_GETALLGROUPLISTS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            Log.i("response",response);
+                            //converting response to json object
+                            JSONObject obj2 = new JSONObject(response);
+                            if (!obj2.getBoolean("error")) {
+                                //if no error in response
+
+                                jsonArraygrouplist = obj2.getJSONArray("grouplist");
+
+                                //loop through all grouplist json
+
+                                for(int i = 0; i < jsonArraygrouplist.length(); i++){
+                                    JSONObject c = jsonArraygrouplist.getJSONObject(i);
+
+
+//                                $grouplist["contactid"] = $row["contactid"];
+//                                $grouplist["firstname"] = $row["firstname"];
+//                                $grouplist["lastname"] = $row["lastname"];
+//                                $grouplist["phonenumber"] = $row["phonenumber"];
+//                                $grouplist["groupid"] = $row["groupid"];
+//                                $grouplist["middlename"] = $row["middlename"];
+                                    //(String firstName, String lastName, String middleName, @NonNull String phoneNumber,@NonNull int groupid,int remotegroupid)
+                                    restoredGroupList.add(new Grouplist(c.getString("firstname"),c.getString("lastname"),c.getString("middlename"),c.getString("phonenumber"),id1,c.getInt("groupid")));
+
+                                }
+
+                                for (Grouplist grouplist : restoredGroupList){
+                                    boolean doesContactExist = groupListViewModel.doesContactExist(grouplist.getPhoneNumber(),grouplist.getGroupid());
+                                    if(doesContactExist == true){
+                                        Toast.makeText(getContext(), "contact exists", Toast.LENGTH_SHORT).show();
+
+                                    }else{
+                                        groupListViewModel.createGroupList(grouplist.getFirstName(),grouplist.getLastName(),grouplist.getMiddleName(),grouplist.getPhoneNumber(),grouplist.getGroupid(),grouplist.getRemotegroupid());
+                                    }
+                                }
+                                Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                //getting the user from the response
+                                //JSONObject userJson = obj2.getJSONObject("user");
+                            } else {
+                                Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String,String> getParams()throws AuthFailureError {
+                //''messagecontent','groupid'
+                Map<String,String> params = new HashMap<>();
+                params.put("groupid",remoteId1+"");
+
+                return params;
+            }
+
+        };
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
     }
 
     private void restoreContactGroup() {
@@ -150,6 +321,30 @@ public class FragmentProfile extends Fragment {
                         JSONObject obj2 = new JSONObject(response);
                         //if no error in response
                         if (!obj2.getBoolean("error")) {
+
+                            jsonArraycontactGroups = obj2.getJSONArray("contactgroup");
+
+                            //loop through all contactgroups json
+
+                            for(int i = 0; i < jsonArraycontactGroups.length(); i++){
+                                JSONObject c = jsonArraycontactGroups.getJSONObject(i);
+
+//                            $contactgroup["id"] = $row["id"];
+//                            $contactgroup["groupname"] = $row["groupname"];
+//                            $contactgroup["numofcontacts"] = $row["numofcontacts"];
+//                            $contactgroup["userid"] = $row["userid"];
+                                //public ContactGroup(String groupname,String numofcontacts, Integer remoteId)
+                                restoredContactGroup.add(new ContactGroup(c.getString("groupname"),c.getString("numofcontacts"),c.getInt("id")));
+                            }
+
+                            for (ContactGroup contactGroup : restoredContactGroup){
+                                boolean doesContactExist = contactGroupViewModel.getContactGroupByName(contactGroup.getGroupname());
+                                if(doesContactExist == true){
+                                    Toast.makeText(getContext(),"Group Exists",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    contactGroupViewModel.createGroup(contactGroup.getGroupname(),contactGroup.getNumofcontacts(),contactGroup.getRemoteId());
+                                }
+                            }
                             Toast.makeText(getContext(), obj2.getString("message"), Toast.LENGTH_SHORT).show();
 
                             //getting the user from the response
@@ -279,7 +474,7 @@ public class FragmentProfile extends Fragment {
 
                                 groupListViewModel.updateGrouplistRemoteid(userJson.getInt("id"),contactGroup.getId());
                                 messageViewModel.updateRemoteId(userJson.getInt("id"),contactGroup.getId());
-                                Toast.makeText(getContext(), obj.getString("message") + "ID: " + volleycontactGroup.getId(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), obj.getString("message") + "ID: " + apiGroupId, Toast.LENGTH_SHORT).show();
 
 //                                Toast.makeText(getContext(), contactGroup.getGroupname(), Toast.LENGTH_SHORT).show();
 

@@ -40,6 +40,19 @@ public class MessageViewModel extends ViewModel {
     public List<Message> getMessageForSync(){
        return messageRepository.returnMessagesForSync();
     }
+    public boolean doesMessageExist(String messageContent,int id){
+        boolean doesMessageContentExist ;
+
+        String result = messageRepository.getMessageBygroupId(messageContent,id);
+
+        if(result!=null){
+            doesMessageContentExist = true;
+        }else{
+            doesMessageContentExist = false;
+        }
+
+        return  doesMessageContentExist;
+    }
     public static class Factory implements ViewModelProvider.Factory{
         private final Context context;
 

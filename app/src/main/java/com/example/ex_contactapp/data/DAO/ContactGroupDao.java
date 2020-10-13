@@ -51,4 +51,8 @@ public interface ContactGroupDao {
     @Query("SELECT groupname FROM contactgroup WHERE contactgroup.groupname=:name")
     String getContactGroupByName(String name);
 
+    @Query("SELECT id FROM contactgroup WHERE contactgroup.remoteId=:remoteid")
+    Integer getGroupIdByRemoteId(int remoteid);
+
+
 }

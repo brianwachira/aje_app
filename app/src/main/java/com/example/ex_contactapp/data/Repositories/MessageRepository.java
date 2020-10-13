@@ -49,4 +49,7 @@ public class MessageRepository {
         return messageDAO.getMessagesForSync();
     }
 
+    public String getMessageBygroupId(String messageContent,int groupId){
+        return  messageDAO.showMessageByRemoteId(messageContent,groupId);
+    }
 }

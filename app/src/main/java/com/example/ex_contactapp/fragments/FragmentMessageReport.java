@@ -65,12 +65,12 @@ public class FragmentMessageReport extends Fragment implements MessageReportAdap
         new AlertDialog.Builder(this.getActivity())
                 .setIcon(R.drawable.ic_delete)
                 .setTitle("Are you sure")
-                .setMessage("Do you want to delete this group")
+                .setMessage("Do you want to delete this message report")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         messageViewModel.deleteMessage(messageReportToDelete);
-                        Toast.makeText(getContext(),"Group deleted",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(),"Message Report Deleted!!!!",Toast.LENGTH_LONG).show();
 
                     }
                 })

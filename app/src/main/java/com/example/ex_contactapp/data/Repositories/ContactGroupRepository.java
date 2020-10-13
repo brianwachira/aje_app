@@ -23,8 +23,8 @@ public class ContactGroupRepository {
         }
         return instance;
     }
-    public void insertContactGroup(String groupname,String numofcontacts){
-        ContactGroup newContactGroup = new ContactGroup(groupname,numofcontacts);
+    public void insertContactGroup(String groupname,String numofcontacts, int remoteId){
+        ContactGroup newContactGroup = new ContactGroup(groupname,numofcontacts,remoteId);
         contactGroupDao.insertGroup(newContactGroup);
     }
 
@@ -51,6 +51,10 @@ public class ContactGroupRepository {
     }
     public String getContactGroupByName(String name){
         return  contactGroupDao.getContactGroupByName(name);
+    }
+
+    public Integer readGroupIdByRemoteId(Integer remoteId){
+        return  contactGroupDao.getGroupIdByRemoteId(remoteId);
     }
 
 }
