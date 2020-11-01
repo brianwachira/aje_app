@@ -63,6 +63,9 @@ public class FragmentProfile extends Fragment {
 
     Button btnSync;
     Button btnRestore;
+    Button btngoLogIn;
+
+    Button logout;
     List<Grouplist> grouplistById;
     List<Grouplist> grouplistWithRemote;
     List<ContactGroup> contactGroupsForSync;
@@ -78,6 +81,7 @@ public class FragmentProfile extends Fragment {
     JSONArray jsonArraycontactGroups;
     JSONArray jsonArraygrouplist;
     JSONArray jsonArraymessagelist;
+    TextView nameTextView;
 
     VolleyContactGroup volleycontactGroup;
 
@@ -103,13 +107,38 @@ public class FragmentProfile extends Fragment {
 
         jsonArraycontactGroups = null;
         btnRestore = v.findViewById(R.id.buttonRestore);
+        btngoLogIn = v.findViewById(R.id.goLogin);
+        logout = v.findViewById(R.id.buttonLogout);
+        nameTextView = v.findViewById(R.id.name);
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferenceManager.getInstance(getContext()).logout();
+//                Intent intent = new Intent(v.getContext(),LoginActivity.class);
+//                startActivity(intent);
+            }
+        });
+        btngoLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(),LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         if(SharedPreferenceManager.getInstance(getContext()).isLoggedIn()){
             user = SharedPreferenceManager.getInstance(getContext()).getUser();
 
-            accountName.setText(user.getGivenName() + " " + user.getId());
+            accountName.setText(user.getGivenName());
+            btngoLogIn.setVisibility(View.INVISIBLE);
         }else{
-            Intent intent = new Intent(v.getContext(),LoginActivity.class);
-            startActivity(intent);
+            logout.setVisibility(View.INVISIBLE);
+            btnSync.setVisibility(View.INVISIBLE);
+            btnRestore.setVisibility(View.INVISIBLE);
+            accountName.setVisibility(View.INVISIBLE);
+            nameTextView.setVisibility(View.INVISIBLE);
 
         }
 

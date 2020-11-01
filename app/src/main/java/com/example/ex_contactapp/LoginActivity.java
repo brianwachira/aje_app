@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         try{
             GoogleSignInAccount account = task.getResult(ApiException.class);
-            Toast.makeText(getApplicationContext(),"Welcome " + account.getId(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Welcome " + account.getGivenName(),Toast.LENGTH_LONG).show();
 
 //            SaveSharedPreferences.setId(getApplicationContext(),account.getId());
 //            SaveSharedPreferences.setName(getApplicationContext(),account.getGivenName());

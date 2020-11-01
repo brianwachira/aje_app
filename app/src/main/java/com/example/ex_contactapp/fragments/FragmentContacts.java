@@ -21,9 +21,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.ex_contactapp.R;
 import com.example.ex_contactapp.adapters.ContactsRvAdapter;
@@ -62,6 +65,8 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
     private GroupListViewModel groupListViewModel;
 
+    ViewPager viewPager;
+
     public FragmentContacts() {
 
     }
@@ -86,6 +91,9 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
         RecyclerView.LayoutManager layoutManager= linearLayoutManager;
 
+        viewPager = v.findViewById(R.id.viewpager);
+
+
         recyclerView.setLayoutManager(layoutManager);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M &&
                 ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED){
@@ -105,7 +113,7 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
                 Log.i("editTextGroupNamelength", String.valueOf(editTextGroupName.getText().toString().length()));
                 if (editTextGroupName.getText().toString().length() > 2) {
-                    if(currentSelectedContacts.size() > 4){
+                    if(currentSelectedContacts.size() > 1){
                         boolean doesContactExist = contactGroupViewModel.getContactGroupByName(editTextGroupName.getText().toString());
                         if(doesContactExist == true){
                             Toast.makeText(getContext(),"Name already taken",Toast.LENGTH_SHORT).show();
@@ -119,7 +127,7 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
                     }else{
                         new AlertDialog.Builder(this.getActivity())
                                 .setIcon(R.drawable.ic_error)
-                                .setTitle("Insufficient group members")
+                                .setTitle("Insufficient number of group members")
                                 .setMessage("A group should have at least 5 members")
                                 .setNeutralButton("Ok",null)
                                 .show();
@@ -228,7 +236,7 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
             currentSelectedContacts.removeIf( currentSelectedContact -> currentSelectedContact.getPhoneNumber().equals(phonenumber));
 
         //currentSelectedContacts.remove(contactId);
-        Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),currentSelectedContacts.toString(),Toast.LENGTH_SHORT).show();
     }
 
     public void clearFields(){
@@ -250,8 +258,17 @@ public class FragmentContacts extends Fragment implements ContactsRvAdapter.Chec
 
             }
         });
-
+        Toast.makeText(getContext(),"Contact group created succesfully",Toast.LENGTH_LONG).show();
         clearFields();
+        //FragmentContactGroups fragment = new FragmentContactGroups();
+        //FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //fragmentTransaction.replace(R.id.viewpager,fragment).commit();
+        //fragmentTransaction.addToBackStack(null);
+        //fragmentTransaction.commit();
+
+        //viewPager.setCurrentItem(1);
+
 
     }
 

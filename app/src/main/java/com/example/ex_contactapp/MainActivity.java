@@ -73,5 +73,10 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED){
 
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);}
+
+        finish();
+        overridePendingTransition(0,0);
+        startActivity(getIntent());
+        overridePendingTransition(0,0);
     }
 }

@@ -115,7 +115,7 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
 
         messageParametersList.add(modelMessageParameters);
 
-        editTextmessage.append("'includeFirstName'");
+        editTextmessage.append("'includeFirstName' " + " ");
 
     }
 
@@ -125,7 +125,7 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
         ModelMessageParameters modelMessageParameters = new ModelMessageParameters(message.length(),"ln");
 
         messageParametersList.add(modelMessageParameters);
-        editTextmessage.append("'includeLastName'");
+        editTextmessage.append("'includeLastName'" + " ");
 
 
     }
@@ -337,11 +337,23 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
 
             for (Grouplist grouplist : this.modelMessages.getGrouplistToUse()) {
                 if(modelMessages.getMessage().contains("'includeFirstName'")){
-                    theMessageToSend=modelMessages.getMessage().replace("'includeFirstName'",grouplist.getFirstName());
-                }else if(modelMessages.getMessage().contains("'includeLastName'")){
-                    theMessageToSend=modelMessages.getMessage().replace("'includeLastName'",grouplist.getLastName());
+
+                         if(modelMessages.getMessage().contains("'includeLastName'")){
+                        theMessageToSend=modelMessages.getMessage().replace("'includeLastName'",grouplist.getLastName());
+                        theMessageToSend=theMessageToSend.replace("'includeFirstName'",grouplist.getFirstName());
+
+                         }else{
+                             theMessageToSend=modelMessages.getMessage().replace("'includeFirstName'",grouplist.getFirstName());
+                         }
                 }else{
-                    theMessageToSend = modelMessages.getMessage();
+                    if(modelMessages.getMessage().contains("'includeLastName'")) {
+                        theMessageToSend=modelMessages.getMessage().replace("'includeLastName'",grouplist.getLastName());
+                    }else {
+                        theMessageToSend = modelMessages.getMessage();
+                    }
+                }
+                if(theMessageToSend.contains("null")){
+                    theMessageToSend = theMessageToSend.replace("null"," ");
                 }
                     smsManager.sendTextMessage(grouplist.getPhoneNumber(), (String) null, theMessageToSend, sentIntent, deliveryIntent);
                     List<String> list = this.messageReport;
@@ -365,6 +377,7 @@ public class FragmentMessage extends Fragment implements AdapterView.OnItemSelec
             for (String report : this.messageReport) {
                 Toast.makeText(FragmentMessage.this.getContext(), report, Toast.LENGTH_SHORT).show();
             }
+            this.dialog.dismiss();
         }
     }
 }
