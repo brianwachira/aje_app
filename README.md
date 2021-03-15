@@ -10,4 +10,4 @@ A mobile application  for sending mass personalized text messages to many recepi
 - The online syncing feature does not sync all of the user's data. 
 
 ## Inquiries
-- Email me brianwachira7@gmail.com
+- Email me at brianwachira7@gmail.com
